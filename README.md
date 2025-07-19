@@ -6,3 +6,5 @@ Client: Next.js (React) + Socket.IO-client.
 Lưu trữ câu hỏi: File JSON hoặc mảng cứng trong code server.
 Công cụ quản lý Git: GitHub/GitLab.
 Giao diện: Next.js với Tailwind CSS (hoặc CSS module) để tạo giao diện đẹp, đơn giản.
+
+Thông tin thành viên nhóm 4 người gồm : Phúc , Khoa , Phát , Hoà
