@@ -13,3 +13,5 @@ Thông tin thành viên nhóm 4 người gồm : Phúc , Khoa , Phát , Hoà
 Chúng em sử dụng Node.js và Socket.IO cho phần server để đảm bảo tốc độ phản hồi nhanh, đồng thời xây dựng giao diện hiện đại với Next.js và Tailwind CSS. Dữ liệu câu hỏi được lưu trữ linh hoạt bằng file JSON hoặc trực tiếp trong code, giúp dễ dàng mở rộng và cập nhật nội dung.
 
 Dự án này không chỉ là nơi để luyện tập kỹ năng lập trình mà còn là cơ hội để các thành viên học hỏi, phối hợp và phát triển các kỹ năng làm việc nhóm trong môi trường thực tế.
+
+Node.js là một môi trường chạy JavaScript phía máy chủ (server-side). Thay vì chạy JavaScript chỉ trong trình duyệt (như trước đây), Node.js cho phép bạn viết ứng dụng backend bằng JavaScript và chạy trực tiếp trên máy tính của bạn hoặc trên server.
