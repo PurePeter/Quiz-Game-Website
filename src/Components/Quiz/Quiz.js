@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Quiz.css';
 import Chart from '../Chart/Chart';
 
@@ -7,57 +7,72 @@ const Quiz = ({ questionData, currentQuestionIndex, totalQuestions, score, onAns
     const [isAnswerRevealed, setIsAnswerRevealed] = useState(false);
     const [timer, setTimer] = useState(15);
     const [showChart, setShowChart] = useState(false);
-    const [chartData, setChartData] = useState([5, 8, 2, 10]); // fake data
-    const timeRef = useRef();
+    const [chartData, setChartData] = useState([5, 8, 2, 10]);
+    const [answerTime, setAnswerTime] = useState(0);
+    const timeRef = useRef(null);
+    const nextQuestionTimeoutRef = useRef(null);
     const shapes = ['triangle', 'square', 'circle', 'star'];
 
+    const processAndRevealAnswer = useCallback(() => {
+        setIsAnswerRevealed(true);
+
+        const correctIndex = questionData.answerOptions.findIndex((a) => a.isCorrect);
+        const isCorrect = selectedAnswer !== null && selectedAnswer === correctIndex;
+
+        // Tính điểm: đúng thì 100 + bonus, sai hoặc hết giờ thì 0
+        const finalScore = isCorrect ? 100 + answerTime * 13 : 0;
+        onAnswer(isCorrect, finalScore);
+
+        // Hiển thị chart
+        setShowChart(true);
+        setChartData([
+            Math.floor(Math.random() * 10) + 1,
+            Math.floor(Math.random() * 10) + 1,
+            Math.floor(Math.random() * 10) + 1,
+            Math.floor(Math.random() * 10) + 1,
+        ]);
+
+        nextQuestionTimeoutRef.current = setTimeout(() => {
+            onNext();
+        }, 4000);
+    }, [questionData, selectedAnswer, answerTime, onAnswer, onNext]);
+
     useEffect(() => {
+        if (nextQuestionTimeoutRef.current) clearTimeout(nextQuestionTimeoutRef.current);
+        if (timeRef.current) clearInterval(timeRef.current);
+
         setTimer(15);
         setSelectedAnswer(null);
         setIsAnswerRevealed(false);
         setShowChart(false);
-        if (timeRef.current) clearInterval(timeRef.current);
+        setAnswerTime(0);
+
         timeRef.current = setInterval(() => {
-            setTimer((prev) => {
-                if (prev < 1) {
-                    clearInterval(timeRef.current);
-                    handleAnswerClick(false, null, true);
-                    return 0;
-                }
-                return prev - 1;
-            });
+            setTimer((prev) => (prev > 0 ? prev - 1 : 0));
         }, 1000);
-        return () => clearInterval(timeRef.current);
-        // eslint-disable-next-line
+
+        return () => {
+            clearInterval(timeRef.current);
+            if (nextQuestionTimeoutRef.current) clearTimeout(nextQuestionTimeoutRef.current);
+        };
     }, [questionData]);
 
-    const handleAnswerClick = (isCorrect, answerIndex, isTimeout = false) => {
-        if (selectedAnswer !== null && !isTimeout) return; // tránh double click
+    useEffect(() => {
+        if (timer === 0 && !isAnswerRevealed) {
+            clearInterval(timeRef.current);
+
+            const revealTimeout = setTimeout(() => {
+                processAndRevealAnswer();
+            }, 1000);
+
+            return () => clearTimeout(revealTimeout);
+        }
+    }, [timer, isAnswerRevealed, processAndRevealAnswer]);
+
+    const handleAnswerClick = (answerIndex) => {
+        if (selectedAnswer !== null) return;
         setSelectedAnswer(answerIndex);
-        clearInterval(timeRef.current);
-        setTimeout(() => {
-            setIsAnswerRevealed(true);
-            if (!isTimeout) {
-                onAnswer(isCorrect, timer);
-            } else {
-                onAnswer(false, 0);
-            }
-            // Hiện chart sau khi hiện đáp án 1s
-            setShowChart(true);
-            // Fake lại dữ liệu chart mỗi lần (demo)
-            setChartData([
-                Math.floor(Math.random() * 10) + 1,
-                Math.floor(Math.random() * 10) + 1,
-                Math.floor(Math.random() * 10) + 1,
-                Math.floor(Math.random() * 10) + 1,
-            ]);
-            setTimeout(() => {
-                setIsAnswerRevealed(false);
-                setSelectedAnswer(null);
-                setShowChart(false);
-                onNext();
-            }, 4000);
-        }, 1000);
+        setAnswerTime(timer);
     };
 
     const Shape = ({ type }) => {
@@ -120,7 +135,7 @@ const Quiz = ({ questionData, currentQuestionIndex, totalQuestions, score, onAns
                         <button
                             key={index}
                             className={className}
-                            onClick={() => handleAnswerClick(answerOption.isCorrect, index)}
+                            onClick={() => handleAnswerClick(index)}
                             disabled={selectedAnswer !== null}
                         >
                             <Shape type={shapes[index % shapes.length]} />

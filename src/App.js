@@ -43,7 +43,6 @@ function App() {
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [score, setScore] = useState(0);
-    const [bonusScore, setBonusScore] = useState(0);
     const [showScore, setShowScore] = useState(false);
     const [isQuizStarted, setIsQuizStarted] = useState(false);
     const [isCountingDown, setIsCountingDown] = useState(false);
@@ -52,10 +51,9 @@ function App() {
         setQuestions(mockQuestions);
     }, []);
 
-    const handleAnswer = (isCorrect, timeLeft) => {
+    const handleAnswer = (isCorrect, point) => {
         if (isCorrect) {
-            setScore((prev) => prev + 1);
-            setBonusScore((prev) => prev + timeLeft);
+            setScore((prev) => prev + point);
         }
     };
 
@@ -71,7 +69,6 @@ function App() {
     const restartQuiz = () => {
         setCurrentQuestionIndex(0);
         setScore(0);
-        setBonusScore(0);
         setShowScore(false);
         setIsQuizStarted(false);
         setIsCountingDown(false);
@@ -81,7 +78,6 @@ function App() {
         setShowScore(false);
         setCurrentQuestionIndex(0);
         setScore(0);
-        setBonusScore(0);
         setIsCountingDown(true);
     };
 
@@ -98,10 +94,8 @@ function App() {
                 <Lobby onStartQuiz={startQuiz} />
             ) : showScore ? (
                 <div className="score-section">
-                    <h2>
-                        Bạn đã trả lời đúng {score} trên {questions.length} câu!
-                    </h2>
-                    <h3>Điểm thưởng thời gian: {bonusScore}</h3>
+                    <h2>Xin chúc mừng bạn đã hoàn thành {questions.length} câu!</h2>
+                    <h3>Điểm của bạn: {score} điểm</h3>
                     <button onClick={restartQuiz}>Chơi lại</button>
                 </div>
             ) : (
