@@ -24,7 +24,7 @@ const CountDown = ({ initialCount = 3, onFinish }) => {
 
     return (
         <div className="countdown-container">
-            <div className="countdown-text" key={count}>
+            <div className={`countdown-text ${count === 'Go!' ? 'go-text' : ''}`} key={count}>
                 {count}
             </div>
         </div>

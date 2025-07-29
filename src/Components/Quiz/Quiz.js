@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Quiz.css';
+import Chart from '../Chart/Chart';
 
 const Quiz = ({ questionData, currentQuestionIndex, totalQuestions, score, onAnswer, onNext }) => {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [isAnswerRevealed, setIsAnswerRevealed] = useState(false);
     const [timer, setTimer] = useState(15);
+    const [showChart, setShowChart] = useState(false);
+    const [chartData, setChartData] = useState([5, 8, 2, 10]); // fake data
     const timeRef = useRef();
     const shapes = ['triangle', 'square', 'circle', 'star'];
 
@@ -12,6 +15,7 @@ const Quiz = ({ questionData, currentQuestionIndex, totalQuestions, score, onAns
         setTimer(15);
         setSelectedAnswer(null);
         setIsAnswerRevealed(false);
+        setShowChart(false);
         if (timeRef.current) clearInterval(timeRef.current);
         timeRef.current = setInterval(() => {
             setTimer((prev) => {
@@ -38,9 +42,19 @@ const Quiz = ({ questionData, currentQuestionIndex, totalQuestions, score, onAns
             } else {
                 onAnswer(false, 0);
             }
+            // Hiện chart sau khi hiện đáp án 1s
+            setShowChart(true);
+            // Fake lại dữ liệu chart mỗi lần (demo)
+            setChartData([
+                Math.floor(Math.random() * 10) + 1,
+                Math.floor(Math.random() * 10) + 1,
+                Math.floor(Math.random() * 10) + 1,
+                Math.floor(Math.random() * 10) + 1,
+            ]);
             setTimeout(() => {
                 setIsAnswerRevealed(false);
                 setSelectedAnswer(null);
+                setShowChart(false);
                 onNext();
             }, 4000);
         }, 1000);
@@ -66,7 +80,6 @@ const Quiz = ({ questionData, currentQuestionIndex, totalQuestions, score, onAns
                     ></div>
                 </div>
             </div>
-
             <div className="question-section">
                 <div className="question-text">{questionData.questionText}</div>
             </div>
@@ -79,8 +92,16 @@ const Quiz = ({ questionData, currentQuestionIndex, totalQuestions, score, onAns
                     <span className="timer-bar-text">{timer}s</span>
                 </div>
             </div>
-            {questionData.imageUrl && (
-                <img src={questionData.imageUrl} alt="Question illustration" className="question-image" />
+            {showChart ? (
+                <Chart
+                    data={chartData}
+                    correctIndex={questionData.answerOptions.findIndex((a) => a.isCorrect)}
+                    shapes={shapes}
+                />
+            ) : (
+                questionData.imageUrl && (
+                    <img src={questionData.imageUrl} alt="Question illustration" className="question-image" />
+                )
             )}
             <div className="answer-section">
                 {questionData.answerOptions.map((answerOption, index) => {
