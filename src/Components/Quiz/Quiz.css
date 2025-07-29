@@ -6,8 +6,45 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
     font-family: sans-serif;
+}
+
+/* Header Quiz */
+.header-quiz {
+    width: 100%;
+    max-width: 620px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 620px;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    border: 1px solid #444;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
+    border-radius: 5px;
+    transition: width 0.5s ease-in-out;
 }
 
 .question-section {
@@ -15,15 +52,55 @@
     max-width: 600px;
     min-height: 100px;
     /* Dùng min-height để linh hoạt với độ dài câu hỏi */
-    background-color: #D9D9D9;
+    background-color: #d9d9d9;
     color: #000;
     padding: 20px;
     border-radius: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* Timer Layout */
+
+.timer-bar-wrapper {
+    margin: 12px 0;
+    max-width: 400px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+.timer-bar-bg {
+    position: relative;
+    width: 220px;
+    height: 26px;
+    background-color: #eee;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    border: 1px solid #222;
+}
+
+.timer-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
+    border-radius: 12px 0 0 12px;
+    transition: width 1s linear;
+}
+
+.timer-bar-text {
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    margin-top: -10px;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    color: #333;
+    font-size: 1rem;
+    pointer-events: none;
 }
 
 .question-image {
@@ -52,7 +129,7 @@
     align-items: center;
     border: 2px solid #5a638a;
     border-radius: 5px;
-    padding: 16px;
+    padding: 12px;
     font-size: 1rem;
     color: #fff;
     cursor: pointer;
@@ -68,7 +145,7 @@
 }
 
 .answer-button:nth-child(3) {
-    background-color: #f1c40f;
+    background-color: #e0b60d;
     color: #fff;
 }
 

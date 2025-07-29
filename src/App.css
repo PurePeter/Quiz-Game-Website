@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  position: relative;
 }
 
 .score-section {
@@ -23,14 +24,4 @@
   background-color: #ffc107;
   color: #252d4a;
   font-weight: bold;
-}
-
-.timer {
-  font-size: 1.2rem;
-  color: #ff9800;
-  margin-top: 10px;
-  font-weight: bold;
-  position: fixed;
-  top: 0;
-  right: 42%;
 }

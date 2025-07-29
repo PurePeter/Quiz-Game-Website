@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Quiz from '~/Components/Quiz/Quiz.js';
 import Lobby from '~/Components/Lobby/Lobby';
+import CountDown from '~/Components/CountDown/CountDown.js';
+
 import '~/App.css';
-import { clear } from '@testing-library/user-event/dist/clear';
 
 function App() {
     const mockQuestions = [
@@ -45,62 +46,26 @@ function App() {
     const [bonusScore, setBonusScore] = useState(0);
     const [showScore, setShowScore] = useState(false);
     const [isQuizStarted, setIsQuizStarted] = useState(false);
-    const [selectedAnswer, setSelectedAnswer] = useState(null);
-    const [isAnswerRevealed, setIsAnswerRevealed] = useState(false);
-    const [timer, setTimer] = useState(15);
-    const timeRef = useRef();
+    const [isCountingDown, setIsCountingDown] = useState(false);
 
     useEffect(() => {
         setQuestions(mockQuestions);
     }, []);
 
-    useEffect(() => {
-        if (!isQuizStarted || showScore) return;
-        setTimer(15);
-        if (timeRef.current) clearInterval(timeRef.current);
+    const handleAnswer = (isCorrect, timeLeft) => {
+        if (isCorrect) {
+            setScore((prev) => prev + 1);
+            setBonusScore((prev) => prev + timeLeft);
+        }
+    };
 
-        timeRef.current = setInterval(() => {
-            setTimer((prev) => {
-                if (prev < 1) {
-                    clearInterval(timeRef.current);
-                    handleAnswerClick(false, null, true);
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-        return () => clearInterval(timeRef.current);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentQuestionIndex, isQuizStarted, showScore]);
-
-    const handleAnswerClick = (isCorrect, answerIndex) => {
-        if (selectedAnswer !== null) return; // tránh double click
-
-        setSelectedAnswer(answerIndex);
-
-        clearInterval(timeRef.current);
-
-        // Sau 1s thì hiện kết quả
-        setTimeout(() => {
-            setIsAnswerRevealed(true);
-
-            if (isCorrect) {
-                setScore((prev) => prev + 1);
-                setBonusScore((prev) => prev + timer);
-            }
-
-            // Sau 3s nữa thì qua câu tiếp theo
-            setTimeout(() => {
-                const nextIndex = currentQuestionIndex + 1;
-                if (nextIndex < questions.length) {
-                    setCurrentQuestionIndex(nextIndex);
-                    setSelectedAnswer(null);
-                    setIsAnswerRevealed(false);
-                } else {
-                    setShowScore(true);
-                }
-            }, 3000);
-        }, 1000);
+    const handleNextQuestion = () => {
+        const nextIndex = currentQuestionIndex + 1;
+        if (nextIndex < questions.length) {
+            setCurrentQuestionIndex(nextIndex);
+        } else {
+            setShowScore(true);
+        }
     };
 
     const restartQuiz = () => {
@@ -109,25 +74,27 @@ function App() {
         setBonusScore(0);
         setShowScore(false);
         setIsQuizStarted(false);
-        setSelectedAnswer(null);
-        setIsAnswerRevealed(false);
-        setTimer(15);
+        setIsCountingDown(false);
     };
 
     const startQuiz = () => {
-        setIsQuizStarted(true);
         setShowScore(false);
         setCurrentQuestionIndex(0);
         setScore(0);
         setBonusScore(0);
-        setSelectedAnswer(null);
-        setIsAnswerRevealed(false);
-        setTimer(15);
+        setIsCountingDown(true);
+    };
+
+    const handleCountdownFinish = () => {
+        setIsCountingDown(false);
+        setIsQuizStarted(true);
     };
 
     return (
         <div className="App">
-            {!isQuizStarted ? (
+            {isCountingDown ? (
+                <CountDown initialCount={3} onFinish={handleCountdownFinish} />
+            ) : !isQuizStarted ? (
                 <Lobby onStartQuiz={startQuiz} />
             ) : showScore ? (
                 <div className="score-section">
@@ -140,17 +107,14 @@ function App() {
             ) : (
                 <>
                     {questions.length > 0 ? (
-                        <>
-                            <div className="timer">
-                                Thời gian còn lại: <span>{timer} giây</span>
-                            </div>
-                            <Quiz
-                                questionData={questions[currentQuestionIndex]}
-                                handleAnswerClick={handleAnswerClick}
-                                selectedAnswer={selectedAnswer}
-                                isAnswerRevealed={isAnswerRevealed}
-                            />
-                        </>
+                        <Quiz
+                            questionData={questions[currentQuestionIndex]}
+                            currentQuestionIndex={currentQuestionIndex}
+                            totalQuestions={questions.length}
+                            score={score}
+                            onAnswer={handleAnswer}
+                            onNext={handleNextQuestion}
+                        />
                     ) : (
                         <h2>Đang tải câu hỏi...</h2>
                     )}
