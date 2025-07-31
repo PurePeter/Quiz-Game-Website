@@ -1,0 +1,170 @@
+/* Animation FadeInUp */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.end-game-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    background-color: #800080;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.summary-card,
+.leaderboard-container {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    padding: 20px 30px;
+    margin-bottom: 25px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: fadeInUp 0.9s ease-out forwards;
+}
+
+.end-game-container h2 {
+    font-size: 1.8rem;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #f1c40f;
+}
+
+.end-game-container h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+/* Rank board */
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    padding: 12px 15px;
+    text-align: center;
+}
+
+.leaderboard-table thead {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.leaderboard-table th {
+    font-weight: bold;
+    color: #ddd;
+    position: sticky;
+    top: 0;
+    background-color: #6a006a;
+    z-index: 1;
+    text-align: center;
+}
+
+.leaderboard-table .rank {
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+    width: 60px;
+}
+
+.leaderboard-scroll-area {
+    max-height: 40vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #f1c40f rgba(0, 0, 0, 0.3);
+}
+
+.leaderboard-scroll-area::-webkit-scrollbar {
+    width: 8px;
+}
+
+.leaderboard-scroll-area::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.leaderboard-scroll-area::-webkit-scrollbar-thumb {
+    background-color: #f1c40f;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+/* NEW: Style for top 5 ranks */
+.leaderboard-table .top-rank {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.leaderboard-table .current-player {
+    background-color: rgba(46, 204, 113, 0.3) !important;
+    font-weight: bold;
+    border: 1px solid #2ecc71;
+}
+
+.leaderboard-table .current-player td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.leaderboard-table .current-player td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.rank-separator {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 5px 0;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.restart-button {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 10px;
+    animation: fadeInUp 0.9s ease-out forwards;
+}
+
+.restart-button:hover {
+    background-color: #2ecc71;
+    transform: translateY(-3px);
+}
+
+@media screen and (max-width: 480px) {
+
+    .summary-card,
+    .leaderboard-container {
+        width: 85%;
+    }
+
+    .end-game-container h2 {
+        font-size: 1.5rem;
+    }
+
+    .end-game-container h3 {
+        font-size: 1.1rem;
+    }
+}

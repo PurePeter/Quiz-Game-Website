@@ -19,11 +19,10 @@ const Quiz = ({ questionData, currentQuestionIndex, totalQuestions, score, onAns
         const correctIndex = questionData.answerOptions.findIndex((a) => a.isCorrect);
         const isCorrect = selectedAnswer !== null && selectedAnswer === correctIndex;
 
-        // Tính điểm: đúng thì 100 + bonus, sai hoặc hết giờ thì 0
         const finalScore = isCorrect ? 100 + answerTime * 13 : 0;
         onAnswer(isCorrect, finalScore);
 
-        // Hiển thị chart
+        // Show chart
         setShowChart(true);
         setChartData([
             Math.floor(Math.random() * 10) + 1,

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Quiz from '~/Components/Quiz/Quiz.js';
 import Lobby from '~/Components/Lobby/Lobby';
 import CountDown from '~/Components/CountDown/CountDown.js';
+import EndGame from '~/Components/EndGame/EndGame.js';
 
 import '~/App.css';
 
@@ -93,11 +94,7 @@ function App() {
             ) : !isQuizStarted ? (
                 <Lobby onStartQuiz={startQuiz} />
             ) : showScore ? (
-                <div className="score-section">
-                    <h2>Xin chúc mừng bạn đã hoàn thành {questions.length} câu!</h2>
-                    <h3>Điểm của bạn: {score} điểm</h3>
-                    <button onClick={restartQuiz}>Chơi lại</button>
-                </div>
+                <EndGame score={score} totalQuestions={questions.length} onRestart={restartQuiz} />
             ) : (
                 <>
                     {questions.length > 0 ? (

@@ -7,6 +7,7 @@
     align-items: center;
     justify-content: center;
     font-family: sans-serif;
+    box-sizing: border-box;
 }
 
 /* Header Quiz */
@@ -51,7 +52,6 @@
     width: 100%;
     max-width: 630px;
     min-height: 100px;
-    /* Dùng min-height để linh hoạt với độ dài câu hỏi */
     background-color: #d9d9d9;
     color: #000;
     padding: 20px;
@@ -226,4 +226,57 @@
     height: 26px;
     background-color: #fff;
     clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+
+/* Responsive */
+/* For Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+    .answer-section {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .quiz-container {
+        padding: 15px;
+    }
+
+    .header-quiz,
+    .question-section {
+        width: 90%;
+    }
+
+    .question-text {
+        font-size: 1.3rem;
+    }
+}
+
+/* For Moblie */
+@media screen and (max-width: 480px) {
+    .answer-section {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+        margin: 0 auto;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .quiz-container {
+        padding: 15px;
+    }
+
+    .header-quiz {
+        width: 95%;
+    }
+
+    .question-section {
+        width: 90%;
+        min-height: 70px;
+    }
+
+    .question-text {
+        font-size: 1.1rem;
+    }
 }
