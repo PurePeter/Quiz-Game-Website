@@ -279,4 +279,8 @@
     .question-text {
         font-size: 1.1rem;
     }
+
+    .question-image {
+        height: 170px;
+    }
 }

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './EndGame.css';
 
-const EndGame = ({ score, totalQuestions, onRestart }) => {
+const EndGame = ({ score, totalQuestions, onRestart, playerName }) => {
     const [leaderboard, setLeaderboard] = useState([]);
+    const [playerRank, setPlayerRank] = useState(0);
 
     useEffect(() => {
-        // Dữ liệu giả cho những người chơi khác
+        // Fake data other Players
         const otherPlayers = [
             { name: 'Player A', score: 1350 },
             { name: 'Player B', score: 1180 },
@@ -21,12 +22,16 @@ const EndGame = ({ score, totalQuestions, onRestart }) => {
             { name: 'Player L', score: 210 },
         ];
 
-        // Thêm người chơi hiện tại vào danh sách
-        const currentPlayer = { name: 'Bạn', score: score, isCurrentUser: true };
+        // Add current player to list
+        const currentPlayer = { name: playerName, score: score, isCurrentUser: true };
         const fullLeaderboard = [...otherPlayers, currentPlayer].sort((a, b) => b.score - a.score);
 
+        // Find player rank
+        const rank = fullLeaderboard.findIndex((p) => p.isCurrentUser) + 1;
+
         setLeaderboard(fullLeaderboard);
-    }, [score]);
+        setPlayerRank(rank);
+    }, [score, playerName]);
 
     const getMedal = (rank) => {
         if (rank === 1) return '🥇';
@@ -74,6 +79,20 @@ const EndGame = ({ score, totalQuestions, onRestart }) => {
                         </tbody>
                     </table>
                 </div>
+                {/* Player ranking summary */}
+                {playerRank > 0 && (
+                    <div className="player-summary">
+                        <table className="leaderboard-table">
+                            <tbody>
+                                <tr className="current-player summary-row">
+                                    <td className="rank">{getMedal(playerRank)}</td>
+                                    <td>{playerName}</td>
+                                    <td>{score}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                )}
             </div>
 
             <button className="restart-button" onClick={onRestart}>

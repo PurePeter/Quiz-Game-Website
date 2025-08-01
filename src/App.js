@@ -47,6 +47,7 @@ function App() {
     const [showScore, setShowScore] = useState(false);
     const [isQuizStarted, setIsQuizStarted] = useState(false);
     const [isCountingDown, setIsCountingDown] = useState(false);
+    const [playerName, setPlayerName] = useState('');
 
     useEffect(() => {
         setQuestions(mockQuestions);
@@ -75,7 +76,8 @@ function App() {
         setIsCountingDown(false);
     };
 
-    const startQuiz = () => {
+    const startQuiz = (name) => {
+        setPlayerName(name || 'Guest');
         setShowScore(false);
         setCurrentQuestionIndex(0);
         setScore(0);
@@ -94,7 +96,12 @@ function App() {
             ) : !isQuizStarted ? (
                 <Lobby onStartQuiz={startQuiz} />
             ) : showScore ? (
-                <EndGame score={score} totalQuestions={questions.length} onRestart={restartQuiz} />
+                <EndGame
+                    score={score}
+                    totalQuestions={questions.length}
+                    onRestart={restartQuiz}
+                    playerName={playerName}
+                />
             ) : (
                 <>
                     {questions.length > 0 ? (

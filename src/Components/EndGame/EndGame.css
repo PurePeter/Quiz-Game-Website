@@ -87,24 +87,41 @@
 .leaderboard-scroll-area {
     max-height: 40vh;
     overflow-y: auto;
+
     scrollbar-width: thin;
-    scrollbar-color: #f1c40f rgba(0, 0, 0, 0.3);
+    scrollbar-color: rgba(255, 255, 255, 0.6) transparent;
 }
 
+/* Customizable for Webkit browsers (Chrome, Safari, Edge) */
 .leaderboard-scroll-area::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
 }
 
 .leaderboard-scroll-area::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
+    background: transparent;
 }
 
 .leaderboard-scroll-area::-webkit-scrollbar-thumb {
-    background-color: #f1c40f;
+    background-color: rgba(255, 255, 255, 0.4);
     border-radius: 10px;
-    border: 2px solid transparent;
+    border: 3px solid transparent;
     background-clip: content-box;
+    transition: background-color 0.2s ease;
+}
+
+.leaderboard-scroll-area:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Player ranking summary area */
+.player-summary {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.player-summary .leaderboard-table {
+    margin-top: 0;
 }
 
 /* NEW: Style for top 5 ranks */
@@ -115,17 +132,20 @@
 .leaderboard-table .current-player {
     background-color: rgba(46, 204, 113, 0.3) !important;
     font-weight: bold;
-    border: 1px solid #2ecc71;
+    overflow: hidden;
+    border-radius: 8px;
 }
 
-.leaderboard-table .current-player td:first-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-}
-
-.leaderboard-table .current-player td:last-child {
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
+/* Highlight the current player */
+.leaderboard-table .current-player td {
+    border-top: 1px solid #2ecc71;
+    border-bottom: 1px solid #2ecc71;
+    border-left: none;
+    border-right: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .rank-separator {
@@ -166,5 +186,9 @@
 
     .end-game-container h3 {
         font-size: 1.1rem;
+    }
+
+    .leaderboard-table th {
+        top: -2px;
     }
 }
