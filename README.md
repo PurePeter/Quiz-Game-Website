@@ -1,8 +1,113 @@
-# Getting Started with Create React App
+# 🎯 QuizMaster - React Quiz Application
+
+A modern, interactive quiz application built with React featuring user authentication, responsive design, and beautiful UI.
+
+## 🚀 Features
+
+### ✨ Core Features
+- **🎮 Interactive Quiz System** - Multiple-choice questions with scoring
+- **🔐 User Authentication** - Login/Register with persistent sessions
+- **👤 User Profiles** - Avatar generation and profile management
+- **📊 Score Tracking** - Real-time scoring and quiz statistics
+- **⏱️ Countdown Timer** - Pre-quiz countdown for better UX
+- **🏆 End Game Summary** - Detailed results and restart options
+
+### 🎨 UI/UX Features
+- **📱 Fully Responsive** - Mobile-first design approach
+- **🎨 Modern Design** - Gradient backgrounds and smooth animations
+- **🧭 Navigation Header** - Sticky header with user menu
+- **💾 Persistent State** - LocalStorage for user sessions
+- **🔄 Modal System** - Login/Register/Profile modals
+- **⚡ Loading States** - Smooth transitions and feedback
+
+## 🏗️ Project Structure
+
+```
+Quiz/
+├── public/
+│   ├── logo_quiz.png          # Quiz logo
+│   └── index.html
+├── src/
+│   ├── Components/
+│   │   ├── Header/            # 🆕 Authentication Header
+│   │   │   ├── Header.js      # Main header component
+│   │   │   ├── Header.css     # Header styling
+│   │   │   ├── UserContext.js # Global user state
+│   │   │   └── AuthService.js # Authentication service
+│   │   ├── Quiz/              # Quiz component
+│   │   ├── Lobby/             # Start screen
+│   │   ├── CountDown/         # Pre-quiz countdown
+│   │   ├── EndGame/           # Results screen
+│   │   └── Chart/             # Score visualization
+│   ├── App.js                 # Main application
+│   ├── App.css               # Global styles
+│   └── index.js              # React entry point
+└── README.md                 # This file
+```
+
+## 🔧 Header Component System
+
+The new Header component provides a complete authentication system:
+
+### Authentication Features
+- **Login Modal** - Username/password authentication
+- **Register Modal** - Full registration with validation
+- **User Profile** - Avatar, name, email management
+- **Session Management** - Persistent login state
+- **Logout** - Clean session termination
+
+### Usage Example
+```jsx
+<Header
+    isAuthenticated={isAuthenticated}
+    user={user}
+    onLogin={handleLogin}
+    onLogout={handleLogout}
+    onShowProfile={handleShowProfile}
+    currentPage="quiz"
+/>
+```
+
+### User Object Structure
+```javascript
+{
+    id: number,
+    name: string,
+    email: string,
+    avatar: string,
+    createdAt: string,
+    stats: {
+        totalQuizzes: number,
+        bestScore: number,
+        averageScore: number
+    }
+}
+```
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## 🛠️ Installation & Setup
+
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn package manager
+
+### Quick Start
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd Quiz
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+
+# Open browser to http://localhost:3000
+```
+
+## 📋 Available Scripts
 
 In the project directory, you can run:
 
@@ -68,3 +173,94 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## 🧪 Testing the Application
+
+### Manual Testing Checklist
+- ✅ **Header Authentication**
+  - Click "Đăng nhập" → Test login modal
+  - Click "Đăng ký" → Test registration modal
+  - Test form validation (empty fields, invalid email)
+  - Test modal switching (Login ↔ Register)
+  - Test user profile dropdown after login
+
+- ✅ **Quiz Flow**
+  - Start quiz from lobby
+  - Answer questions and check scoring
+  - Complete quiz and view results
+  - Test restart functionality
+
+- ✅ **Responsive Design**
+  - Test on mobile devices (< 480px)
+  - Test on tablets (481px - 768px)
+  - Test hamburger menu on mobile
+  - Test modal responsiveness
+
+## 🚀 Deployment
+
+### Build for Production
+```bash
+npm run build
+```
+
+### Deploy to Netlify
+1. Build the project: `npm run build`
+2. Upload `build` folder to Netlify
+3. Set build command: `npm run build`
+4. Set publish directory: `build`
+
+### Deploy to Vercel
+```bash
+npm install -g vercel
+vercel --prod
+```
+
+## 🎨 Customization
+
+### Theming
+You can customize the header colors by modifying CSS variables in `Header.css`:
+
+```css
+:root {
+    --header-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --primary-color: #667eea;
+    --accent-color: #fbbf24;
+}
+```
+
+### Adding New Questions
+Edit the `mockQuestions` array in `App.js`:
+
+```javascript
+const mockQuestions = [
+    {
+        questionText: 'Your question here?',
+        imageUrl: 'https://example.com/image.jpg',
+        answerOptions: [
+            { answerText: 'Option 1', isCorrect: false },
+            { answerText: 'Correct Answer', isCorrect: true },
+            // ... more options
+        ]
+    }
+];
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🙋‍♂️ Support
+
+If you have any questions or need help with setup, please create an issue in the repository.
+
+---
+
+**Happy Coding! 🚀**
