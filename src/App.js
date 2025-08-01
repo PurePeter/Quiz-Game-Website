@@ -3,6 +3,7 @@ import Quiz from '~/Components/Quiz/Quiz.js';
 import Lobby from '~/Components/Lobby/Lobby';
 import CountDown from '~/Components/CountDown/CountDown.js';
 import EndGame from '~/Components/EndGame/EndGame.js';
+import Header from '~/Components/Header/Header.js';
 
 import '~/App.css';
 
@@ -41,6 +42,7 @@ function App() {
         },
     ];
 
+    // Quiz state
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [score, setScore] = useState(0);
@@ -49,10 +51,52 @@ function App() {
     const [isCountingDown, setIsCountingDown] = useState(false);
     const [playerName, setPlayerName] = useState('');
 
+    // Authentication state
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [user, setUser] = useState(null);
+    const [showProfileModal, setShowProfileModal] = useState(false);
+
     useEffect(() => {
         setQuestions(mockQuestions);
+        
+        // Check if user is already logged in (localStorage)
+        const savedUser = localStorage.getItem('quizUser');
+        if (savedUser) {
+            const userData = JSON.parse(savedUser);
+            setUser(userData);
+            setIsAuthenticated(true);
+        }
     }, []);
 
+    // Authentication handlers
+    const handleLogin = (userData) => {
+        setUser(userData);
+        setIsAuthenticated(true);
+        localStorage.setItem('quizUser', JSON.stringify(userData));
+        console.log('User logged in:', userData);
+    };
+
+    const handleLogout = () => {
+        setUser(null);
+        setIsAuthenticated(false);
+        localStorage.removeItem('quizUser');
+        
+        // Reset quiz state when logging out
+        setCurrentQuestionIndex(0);
+        setScore(0);
+        setShowScore(false);
+        setIsQuizStarted(false);
+        setIsCountingDown(false);
+        setPlayerName('');
+        
+        console.log('User logged out');
+    };
+
+    const handleShowProfile = () => {
+        setShowProfileModal(true);
+    };
+
+    // Quiz handlers
     const handleAnswer = (isCorrect, point) => {
         if (isCorrect) {
             setScore((prev) => prev + point);
@@ -77,7 +121,9 @@ function App() {
     };
 
     const startQuiz = (name) => {
-        setPlayerName(name || 'Guest');
+        // Use authenticated user's name if available, otherwise use provided name
+        const quizPlayerName = isAuthenticated && user ? user.name : (name || 'Guest');
+        setPlayerName(quizPlayerName);
         setShowScore(false);
         setCurrentQuestionIndex(0);
         setScore(0);
@@ -89,37 +135,141 @@ function App() {
         setIsQuizStarted(true);
     };
 
+    // Determine current page for header navigation
+    const getCurrentPage = () => {
+        if (isQuizStarted || isCountingDown) return 'quiz';
+        if (showScore) return 'history';
+        return 'quiz';
+    };
+
     return (
         <div className="App">
-            {isCountingDown ? (
-                <CountDown initialCount={3} onFinish={handleCountdownFinish} />
-            ) : !isQuizStarted ? (
-                <Lobby onStartQuiz={startQuiz} />
-            ) : showScore ? (
-                <EndGame
-                    score={score}
-                    totalQuestions={questions.length}
-                    onRestart={restartQuiz}
-                    playerName={playerName}
+            <Header
+                isAuthenticated={isAuthenticated}
+                user={user}
+                onLogin={handleLogin}
+                onLogout={handleLogout}
+                onShowProfile={handleShowProfile}
+                currentPage={getCurrentPage()}
+            />
+            
+            {/* Main Content with top margin to account for fixed header */}
+            <div className="main-content">
+                {isCountingDown ? (
+                    <CountDown initialCount={3} onFinish={handleCountdownFinish} />
+                ) : !isQuizStarted ? (
+                    <Lobby onStartQuiz={startQuiz} />
+                ) : showScore ? (
+                    <EndGame
+                        score={score}
+                        totalQuestions={questions.length}
+                        onRestart={restartQuiz}
+                        playerName={playerName}
+                    />
+                ) : (
+                    <>
+                        {questions.length > 0 ? (
+                            <Quiz
+                                questionData={questions[currentQuestionIndex]}
+                                currentQuestionIndex={currentQuestionIndex}
+                                totalQuestions={questions.length}
+                                score={score}
+                                onAnswer={handleAnswer}
+                                onNext={handleNextQuestion}
+                            />
+                        ) : (
+                            <h2>Đang tải câu hỏi...</h2>
+                        )}
+                    </>
+                )}
+            </div>
+
+            {/* Profile Modal */}
+            {showProfileModal && (
+                <ProfileModal 
+                    user={user}
+                    onClose={() => setShowProfileModal(false)}
+                    onUpdateUser={setUser}
                 />
-            ) : (
-                <>
-                    {questions.length > 0 ? (
-                        <Quiz
-                            questionData={questions[currentQuestionIndex]}
-                            currentQuestionIndex={currentQuestionIndex}
-                            totalQuestions={questions.length}
-                            score={score}
-                            onAnswer={handleAnswer}
-                            onNext={handleNextQuestion}
-                        />
-                    ) : (
-                        <h2>Đang tải câu hỏi...</h2>
-                    )}
-                </>
             )}
         </div>
     );
 }
+
+// Profile Modal Component
+const ProfileModal = ({ user, onClose, onUpdateUser }) => {
+    const [formData, setFormData] = useState({
+        name: user?.name || '',
+        email: user?.email || ''
+    });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const updatedUser = {
+            ...user,
+            ...formData,
+            avatar: `https://ui-avatars.com/api/?name=${formData.name}&background=4f46e5&color=fff`
+        };
+        
+        onUpdateUser(updatedUser);
+        localStorage.setItem('quizUser', JSON.stringify(updatedUser));
+        onClose();
+    };
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                    <h2>Hồ sơ cá nhân</h2>
+                    <button className="modal-close" onClick={onClose}>×</button>
+                </div>
+                
+                <form onSubmit={handleSubmit} className="login-form">
+                    <div className="form-group">
+                        <label htmlFor="name">Tên hiển thị</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            placeholder="Nhập tên hiển thị"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            placeholder="Nhập email"
+                        />
+                    </div>
+                    
+                    <div className="form-actions">
+                        <button type="submit" className="submit-btn">
+                            Cập nhật
+                        </button>
+                        <button type="button" className="cancel-btn" onClick={onClose}>
+                            Hủy
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
 
 export default App;
