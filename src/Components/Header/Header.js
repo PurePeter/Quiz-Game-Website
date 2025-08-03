@@ -7,7 +7,8 @@ const Header = ({
     onLogin, 
     onLogout, 
     onShowProfile,
-    currentPage = 'quiz'
+    currentPage = 'quiz',
+    onPageChange
 }) => {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -73,6 +74,12 @@ const Header = ({
         setShowUserDropdown(false);
     };
 
+    const handleNavClick = (page) => {
+        if (onPageChange) {
+            onPageChange(page);
+        }
+    };
+
     return (
         <>
             <header className="header">
@@ -85,19 +92,47 @@ const Header = ({
 
                     {/* Navigation */}
                     <nav className={`nav-menu ${showMobileMenu ? 'nav-menu-active' : ''}`}>
-                        <a href="#" className={`nav-link ${currentPage === 'quiz' ? 'active' : ''}`}>
+                        <a 
+                            href="#" 
+                            className={`nav-link ${currentPage === 'quiz' ? 'active' : ''}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleNavClick('quiz');
+                            }}
+                        >
                             <i className="icon-quiz"></i>
                             Quiz
                         </a>
-                        <a href="#" className={`nav-link ${currentPage === 'history' ? 'active' : ''}`}>
-                            <i className="icon-history"></i>
-                            Create Quiz
+                        <a 
+                            href="#" 
+                            className={`nav-link ${currentPage === 'create' ? 'active' : ''}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleNavClick('create');
+                            }}
+                        >
+                            <i className="icon-create"></i>
+                            Tạo Quiz
                         </a>
-                        <a href="#" className={`nav-link ${currentPage === 'leaderboard' ? 'active' : ''}`}>
+                        <a 
+                            href="#" 
+                            className={`nav-link ${currentPage === 'leaderboard' ? 'active' : ''}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleNavClick('leaderboard');
+                            }}
+                        >
                             <i className="icon-trophy"></i>
                             Bảng xếp hạng
                         </a>
-                        <a href="#" className={`nav-link ${currentPage === 'history' ? 'active' : ''}`}>
+                        <a 
+                            href="#" 
+                            className={`nav-link ${currentPage === 'history' ? 'active' : ''}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleNavClick('history');
+                            }}
+                        >
                             <i className="icon-history"></i>
                             Lịch sử
                         </a>

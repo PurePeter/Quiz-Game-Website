@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './EndGame.css';
 
-const EndGame = ({ score, totalQuestions, onRestart, playerName }) => {
+const EndGame = ({ score, totalQuestions, onRestart, playerName, showLeaderboardOnly = false }) => {
     const [leaderboard, setLeaderboard] = useState([]);
     const [playerRank, setPlayerRank] = useState(0);
 
@@ -22,16 +22,21 @@ const EndGame = ({ score, totalQuestions, onRestart, playerName }) => {
             { name: 'Player L', score: 210 },
         ];
 
-        // Add current player to list
-        const currentPlayer = { name: playerName, score: score, isCurrentUser: true };
-        const fullLeaderboard = [...otherPlayers, currentPlayer].sort((a, b) => b.score - a.score);
-
-        // Find player rank
-        const rank = fullLeaderboard.findIndex((p) => p.isCurrentUser) + 1;
+        // Add current player to list if not showing leaderboard only
+        let fullLeaderboard;
+        if (!showLeaderboardOnly && playerName) {
+            const currentPlayer = { name: playerName, score: score, isCurrentUser: true };
+            fullLeaderboard = [...otherPlayers, currentPlayer].sort((a, b) => b.score - a.score);
+            
+            // Find player rank
+            const rank = fullLeaderboard.findIndex((p) => p.isCurrentUser) + 1;
+            setPlayerRank(rank);
+        } else {
+            fullLeaderboard = otherPlayers;
+        }
 
         setLeaderboard(fullLeaderboard);
-        setPlayerRank(rank);
-    }, [score, playerName]);
+    }, [score, playerName, showLeaderboardOnly]);
 
     const getMedal = (rank) => {
         if (rank === 1) return '🥇';
@@ -39,6 +44,43 @@ const EndGame = ({ score, totalQuestions, onRestart, playerName }) => {
         if (rank === 3) return '🥉';
         return rank;
     };
+
+    if (showLeaderboardOnly) {
+        return (
+            <div className="end-game-container">
+                <div className="leaderboard-container">
+                    <h2>Bảng Xếp Hạng</h2>
+                    <div className="leaderboard-scroll-area">
+                        <table className="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Hạng</th>
+                                    <th>Tên</th>
+                                    <th>Điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {leaderboard.map((player, index) => {
+                                    const rank = index + 1;
+                                    const rowClasses = [];
+                                    if (rank <= 5) {
+                                        rowClasses.push('top-rank');
+                                    }
+                                    return (
+                                        <tr key={index} className={rowClasses.join(' ')}>
+                                            <td className="rank">{getMedal(rank)}</td>
+                                            <td>{player.name}</td>
+                                            <td>{player.score}</td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="end-game-container">

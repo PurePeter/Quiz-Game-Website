@@ -4,6 +4,8 @@ import Lobby from '~/Components/Lobby/Lobby';
 import CountDown from '~/Components/CountDown/CountDown.js';
 import EndGame from '~/Components/EndGame/EndGame.js';
 import Header from '~/Components/Header/Header.js';
+import CreateQuiz from '~/Components/CreateQuiz/CreateQuiz.js';
+import History from '~/Components/History/History.js';
 
 import '~/App.css';
 
@@ -55,6 +57,9 @@ function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState(null);
     const [showProfileModal, setShowProfileModal] = useState(false);
+
+    // Add current page state
+    const [currentPage, setCurrentPage] = useState('quiz');
 
     useEffect(() => {
         setQuestions(mockQuestions);
@@ -141,11 +146,83 @@ function App() {
         setIsQuizStarted(true);
     };
 
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        
+        // Reset quiz state when changing pages
+        if (page !== 'quiz') {
+            setCurrentQuestionIndex(0);
+            setScore(0);
+            setShowScore(false);
+            setIsQuizStarted(false);
+            setIsCountingDown(false);
+            setPlayerName('');
+        }
+    };
+
     // Determine current page for header navigation
     const getCurrentPage = () => {
         if (isQuizStarted || isCountingDown) return 'quiz';
         if (showScore) return 'history';
-        return 'quiz';
+        return currentPage;
+    };
+
+    // Render content based on current page
+    const renderContent = () => {
+        if (isCountingDown) {
+            return <CountDown initialCount={3} onFinish={handleCountdownFinish} />;
+        }
+
+        if (isQuizStarted && !showScore) {
+            return (
+                <>
+                    {questions.length > 0 ? (
+                        <Quiz
+                            questionData={questions[currentQuestionIndex]}
+                            currentQuestionIndex={currentQuestionIndex}
+                            totalQuestions={questions.length}
+                            score={score}
+                            onAnswer={handleAnswer}
+                            onNext={handleNextQuestion}
+                        />
+                    ) : (
+                        <h2>Đang tải câu hỏi...</h2>
+                    )}
+                </>
+            );
+        }
+
+        if (showScore) {
+            return (
+                <EndGame
+                    score={score}
+                    totalQuestions={questions.length}
+                    onRestart={restartQuiz}
+                    playerName={playerName}
+                />
+            );
+        }
+
+        switch (currentPage) {
+            case 'create':
+                return <CreateQuiz isAuthenticated={isAuthenticated} user={user} />;
+            case 'history':
+                return <History isAuthenticated={isAuthenticated} user={user} />;
+            case 'leaderboard':
+                return <EndGame 
+                    score={0} 
+                    totalQuestions={0} 
+                    onRestart={() => {}} 
+                    playerName=""
+                    showLeaderboardOnly={true}
+                />;
+            default:
+                return <Lobby 
+                    onStartQuiz={startQuiz} 
+                    isAuthenticated={isAuthenticated}
+                    user={user}
+                />;
+        }
     };
 
     return (
@@ -157,41 +234,12 @@ function App() {
                 onLogout={handleLogout}
                 onShowProfile={handleShowProfile}
                 currentPage={getCurrentPage()}
+                onPageChange={handlePageChange}
             />
             
             {/* Main Content with top margin to account for fixed header */}
             <div className="main-content">
-                {isCountingDown ? (
-                    <CountDown initialCount={3} onFinish={handleCountdownFinish} />
-                ) : !isQuizStarted ? (
-                    <Lobby 
-                        onStartQuiz={startQuiz} 
-                        isAuthenticated={isAuthenticated}
-                        user={user}
-                    />
-                ) : showScore ? (
-                    <EndGame
-                        score={score}
-                        totalQuestions={questions.length}
-                        onRestart={restartQuiz}
-                        playerName={playerName}
-                    />
-                ) : (
-                    <>
-                        {questions.length > 0 ? (
-                            <Quiz
-                                questionData={questions[currentQuestionIndex]}
-                                currentQuestionIndex={currentQuestionIndex}
-                                totalQuestions={questions.length}
-                                score={score}
-                                onAnswer={handleAnswer}
-                                onNext={handleNextQuestion}
-                            />
-                        ) : (
-                            <h2>Đang tải câu hỏi...</h2>
-                        )}
-                    </>
-                )}
+                {renderContent()}
             </div>
 
             {/* Profile Modal */}
