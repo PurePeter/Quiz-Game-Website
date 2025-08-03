@@ -40,6 +40,9 @@ const Header = ({
             onLogin(mockUser);
         }
         setShowLoginModal(false);
+        
+        // Show success message
+        alert('Đăng nhập thành công! Bây giờ bạn có thể chơi quiz.');
     };
 
     const handleRegister = (userData) => {
@@ -85,6 +88,10 @@ const Header = ({
                         <a href="#" className={`nav-link ${currentPage === 'quiz' ? 'active' : ''}`}>
                             <i className="icon-quiz"></i>
                             Quiz
+                        </a>
+                        <a href="#" className={`nav-link ${currentPage === 'history' ? 'active' : ''}`}>
+                            <i className="icon-history"></i>
+                            Create Quiz
                         </a>
                         <a href="#" className={`nav-link ${currentPage === 'leaderboard' ? 'active' : ''}`}>
                             <i className="icon-trophy"></i>

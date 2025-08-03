@@ -121,8 +121,14 @@ function App() {
     };
 
     const startQuiz = (name) => {
-        // Use authenticated user's name if available, otherwise use provided name
-        const quizPlayerName = isAuthenticated && user ? user.name : (name || 'Guest');
+        // Check if user is authenticated before starting quiz
+        if (!isAuthenticated) {
+            alert('Vui lòng đăng nhập để chơi quiz!');
+            return;
+        }
+        
+        // Use authenticated user's name
+        const quizPlayerName = user ? user.name : 'Guest';
         setPlayerName(quizPlayerName);
         setShowScore(false);
         setCurrentQuestionIndex(0);
@@ -158,7 +164,11 @@ function App() {
                 {isCountingDown ? (
                     <CountDown initialCount={3} onFinish={handleCountdownFinish} />
                 ) : !isQuizStarted ? (
-                    <Lobby onStartQuiz={startQuiz} />
+                    <Lobby 
+                        onStartQuiz={startQuiz} 
+                        isAuthenticated={isAuthenticated}
+                        user={user}
+                    />
                 ) : showScore ? (
                     <EndGame
                         score={score}
