@@ -6,6 +6,7 @@ import EndGame from '~/Components/EndGame/EndGame.js';
 import Header from '~/Components/Header/Header.js';
 import CreateQuiz from '~/Components/CreateQuiz/CreateQuiz.js';
 import History from '~/Components/History/History.js';
+import API_Test from './API_Test.js';
 
 import '~/App.css';
 
@@ -216,6 +217,8 @@ function App() {
                     playerName=""
                     showLeaderboardOnly={true}
                 />;
+            case 'api-test':
+                return <API_Test />;
             default:
                 return <Lobby 
                     onStartQuiz={startQuiz} 

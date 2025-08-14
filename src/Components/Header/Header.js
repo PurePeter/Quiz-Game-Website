@@ -136,6 +136,17 @@ const Header = ({
                             <i className="icon-history"></i>
                             Lịch sử
                         </a>
+                        <a 
+                            href="#" 
+                            className={`nav-link ${currentPage === 'api-test' ? 'active' : ''}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleNavClick('api-test');
+                            }}
+                        >
+                            <i className="icon-api"></i>
+                            API Test
+                        </a>
                     </nav>
 
                     {/* User Section */}
