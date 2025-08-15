@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Quiz from '~/Components/Quiz/Quiz.js';
-import Lobby from '~/Components/Lobby/Lobby';
-import CountDown from '~/Components/CountDown/CountDown.js';
-import EndGame from '~/Components/EndGame/EndGame.js';
-import Header from '~/Components/Header/Header.js';
-import CreateQuiz from '~/Components/CreateQuiz/CreateQuiz.js';
-import History from '~/Components/History/History.js';
-import API_Test from './API_Test.js';
+import Quiz from './Components/Quiz/Quiz.js';
+import Lobby from './Components/Lobby/Lobby';
+import CountDown from './Components/CountDown/CountDown.js';
+import EndGame from './Components/EndGame/EndGame.js';
+import Header from './Components/Header/Header.js';
+import CreateQuiz from './Components/CreateQuiz/CreateQuiz.js';
+import History from './Components/History/History.js';
 
-import '~/App.css';
+import './App.css';
 
 function App() {
     const mockQuestions = [
@@ -45,6 +44,9 @@ function App() {
         },
     ];
 
+    // API Configuration
+    const API_BASE = 'http://localhost:3000/api/v1';
+
     // Quiz state
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -58,34 +60,118 @@ function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState(null);
     const [showProfileModal, setShowProfileModal] = useState(false);
+    const [token, setToken] = useState('');
 
     // Add current page state
-    const [currentPage, setCurrentPage] = useState('quiz');
+    const [currentPage, setCurrentPage] = useState('lobby'); // Default to Lobby
 
     useEffect(() => {
         setQuestions(mockQuestions);
         
         // Check if user is already logged in (localStorage)
         const savedUser = localStorage.getItem('quizUser');
-        if (savedUser) {
+        const savedToken = localStorage.getItem('quiz_token');
+        
+        if (savedUser && savedToken) {
             const userData = JSON.parse(savedUser);
             setUser(userData);
+            setToken(savedToken);
             setIsAuthenticated(true);
+            console.log('✅ User đã đăng nhập từ localStorage:', userData);
         }
     }, []);
 
-    // Authentication handlers
-    const handleLogin = (userData) => {
-        setUser(userData);
-        setIsAuthenticated(true);
-        localStorage.setItem('quizUser', JSON.stringify(userData));
-        console.log('User logged in:', userData);
+    // API Authentication handlers
+    const handleLogin = async (credentials) => {
+        try {
+            console.log('🔑 App.js: Bắt đầu đăng nhập với API...');
+            
+            const response = await fetch(`${API_BASE}/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: credentials.email,
+                    password: credentials.password
+                })
+            });
+
+            const data = await response.json();
+            console.log('📥 App.js: Login response:', data);
+
+            if (data.success && data.user) {
+                const userData = {
+                    _id: data.user._id,
+                    name: data.user.name,
+                    email: data.user.email,
+                    avatar: `https://ui-avatars.com/api/?name=${data.user.name}&background=4f46e5&color=fff`,
+                    token: data.token
+                };
+
+                // Update state
+                setUser(userData);
+                setToken(data.token);
+                setIsAuthenticated(true);
+                
+                // Save to localStorage
+                localStorage.setItem('quizUser', JSON.stringify(userData));
+                localStorage.setItem('quiz_token', data.token);
+                
+                console.log('✅ App.js: Đăng nhập thành công:', userData);
+                return { success: true, user: userData };
+            } else {
+                console.log('❌ App.js: Đăng nhập thất bại:', data.message || 'Không có thông tin user');
+                return { success: false, message: data.message || 'Không có thông tin user' };
+            }
+        } catch (error) {
+            console.error('❌ App.js: Lỗi đăng nhập:', error);
+            return { success: false, message: 'Lỗi kết nối server' };
+        }
+    };
+
+    const handleRegister = async (userData) => {
+        try {
+            console.log('🚀 App.js: Bắt đầu đăng ký với API...');
+            
+            const response = await fetch(`${API_BASE}/auth/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: userData.name,
+                    email: userData.email,
+                    password: userData.password
+                })
+            });
+
+            const data = await response.json();
+            console.log('📥 App.js: Register response:', data);
+
+            if (data.success) {
+                console.log('✅ App.js: Đăng ký thành công:', data.user);
+                
+                // Don't auto-login after registration
+                // User needs to login manually
+                
+                return { success: true, message: "Đăng ký thành công! Vui lòng đăng nhập." };
+            } else {
+                console.log('❌ App.js: Đăng ký thất bại:', data.message);
+                return { success: false, message: data.message };
+            }
+        } catch (error) {
+            console.error('❌ App.js: Lỗi đăng ký:', error);
+            return { success: false, message: 'Lỗi kết nối server' };
+        }
     };
 
     const handleLogout = () => {
         setUser(null);
+        setToken('');
         setIsAuthenticated(false);
         localStorage.removeItem('quizUser');
+        localStorage.removeItem('quiz_token');
         
         // Reset quiz state when logging out
         setCurrentQuestionIndex(0);
@@ -95,7 +181,7 @@ function App() {
         setIsCountingDown(false);
         setPlayerName('');
         
-        console.log('User logged out');
+        console.log('✅ User đã đăng xuất');
     };
 
     const handleShowProfile = () => {
@@ -213,12 +299,10 @@ function App() {
                 return <EndGame 
                     score={0} 
                     totalQuestions={0} 
-                    onRestart={() => {}} 
+                    onFinish={() => {}} 
                     playerName=""
                     showLeaderboardOnly={true}
                 />;
-            case 'api-test':
-                return <API_Test />;
             default:
                 return <Lobby 
                     onStartQuiz={startQuiz} 
@@ -234,6 +318,7 @@ function App() {
                 isAuthenticated={isAuthenticated}
                 user={user}
                 onLogin={handleLogin}
+                onRegister={handleRegister}
                 onLogout={handleLogout}
                 onShowProfile={handleShowProfile}
                 currentPage={getCurrentPage()}

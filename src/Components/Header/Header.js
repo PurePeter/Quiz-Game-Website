@@ -5,6 +5,7 @@ const Header = ({
     isAuthenticated = false, 
     user = null, 
     onLogin, 
+    onRegister,
     onLogout, 
     onShowProfile,
     currentPage = 'quiz',
@@ -28,43 +29,46 @@ const Header = ({
         return () => document.removeEventListener('click', handleClickOutside);
     }, []);
 
-    const handleLogin = (credentials) => {
-        // Mock login logic - replace with real authentication
-        const mockUser = {
-            id: 1,
-            name: credentials.username || 'User',
-            email: credentials.email || 'user@example.com',
-            avatar: `https://ui-avatars.com/api/?name=${credentials.username || 'User'}&background=4f46e5&color=fff`
-        };
-        
-        if (onLogin) {
-            onLogin(mockUser);
+    const handleLogin = async (credentials) => {
+        try {
+            console.log('🔑 Header: Bắt đầu đăng nhập...');
+            
+            // Call onLogin from props (App.js will handle the API call)
+            if (onLogin) {
+                const result = await onLogin(credentials);
+                if (result.success) {
+                    setShowLoginModal(false);
+                    console.log('✅ Header: Đăng nhập thành công');
+                } else {
+                    console.log('❌ Header: Đăng nhập thất bại:', result.message);
+                }
+            } else {
+                console.log('❌ Header: onLogin function không được truyền');
+            }
+        } catch (error) {
+            console.error('❌ Header: Lỗi đăng nhập:', error);
         }
-        setShowLoginModal(false);
-        
-        // Show success message
-        alert('Đăng nhập thành công! Bây giờ bạn có thể chơi quiz.');
     };
 
-    const handleRegister = (userData) => {
-        // Mock register logic - replace with real authentication
-        const newUser = {
-            id: Date.now(),
-            name: userData.username || userData.name || 'User',
-            email: userData.email || 'user@example.com',
-            avatar: `https://ui-avatars.com/api/?name=${userData.username || userData.name || 'User'}&background=4f46e5&color=fff`,
-            createdAt: new Date().toISOString(),
-            stats: {
-                totalQuizzes: 0,
-                bestScore: 0,
-                averageScore: 0
+    const handleRegister = async (userData) => {
+        try {
+            console.log('🚀 Header: Bắt đầu đăng ký...');
+            
+            // Call onRegister from props (App.js will handle the API call)
+            if (onRegister) {
+                const result = await onRegister(userData);
+                if (result.success) {
+                    setShowRegisterModal(false);
+                    console.log('✅ Header: Đăng ký thành công');
+                } else {
+                    console.log('❌ Header: Đăng ký thất bại:', result.message);
+                }
+            } else {
+                console.log('❌ Header: onRegister function không được truyền');
             }
-        };
-        
-        if (onLogin) {
-            onLogin(newUser);
+        } catch (error) {
+            console.error('❌ Header: Lỗi đăng ký:', error);
         }
-        setShowRegisterModal(false);
     };
 
     const handleLogout = () => {
@@ -135,17 +139,6 @@ const Header = ({
                         >
                             <i className="icon-history"></i>
                             Lịch sử
-                        </a>
-                        <a 
-                            href="#" 
-                            className={`nav-link ${currentPage === 'api-test' ? 'active' : ''}`}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                handleNavClick('api-test');
-                            }}
-                        >
-                            <i className="icon-api"></i>
-                            API Test
                         </a>
                     </nav>
 
@@ -248,7 +241,7 @@ const Header = ({
 // Login Modal Component
 const LoginModal = ({ onLogin, onClose, onSwitchToRegister }) => {
     const [formData, setFormData] = useState({
-        username: '',
+        email: '',
         password: ''
     });
 
@@ -274,15 +267,15 @@ const LoginModal = ({ onLogin, onClose, onSwitchToRegister }) => {
                 
                 <form onSubmit={handleSubmit} className="login-form">
                     <div className="form-group">
-                        <label htmlFor="username">Tên đăng nhập</label>
+                        <label htmlFor="email">Email</label>
                         <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            value={formData.username}
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
                             onChange={handleChange}
                             required
-                            placeholder="Nhập tên đăng nhập"
+                            placeholder="Nhập địa chỉ email"
                         />
                     </div>
                     
@@ -330,7 +323,7 @@ const LoginModal = ({ onLogin, onClose, onSwitchToRegister }) => {
 // Register Modal Component
 const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
     const [formData, setFormData] = useState({
-        username: '',
+        name: '',
         email: '',
         password: '',
         confirmPassword: ''
@@ -341,10 +334,10 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
     const validateForm = () => {
         const newErrors = {};
 
-        if (!formData.username.trim()) {
-            newErrors.username = 'Tên đăng nhập không được để trống';
-        } else if (formData.username.length < 3) {
-            newErrors.username = 'Tên đăng nhập phải có ít nhất 3 ký tự';
+        if (!formData.name.trim()) {
+            newErrors.name = 'Tên hiển thị không được để trống';
+        } else if (formData.name.length < 2) {
+            newErrors.name = 'Tên hiển thị phải có ít nhất 2 ký tự';
         }
 
         if (!formData.email.trim()) {
@@ -379,8 +372,6 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
         setIsLoading(true);
         
         try {
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
             onRegister(formData);
         } catch (error) {
             console.error('Registration error:', error);
@@ -415,18 +406,18 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
                 
                 <form onSubmit={handleSubmit} className="login-form">
                     <div className="form-group">
-                        <label htmlFor="register-username">Tên đăng nhập *</label>
+                        <label htmlFor="register-name">Tên hiển thị *</label>
                         <input
                             type="text"
-                            id="register-username"
-                            name="username"
-                            value={formData.username}
+                            id="register-name"
+                            name="name"
+                            value={formData.name}
                             onChange={handleChange}
                             required
-                            placeholder="Nhập tên đăng nhập"
-                            className={errors.username ? 'error' : ''}
+                            placeholder="Nhập tên hiển thị"
+                            className={errors.name ? 'error' : ''}
                         />
-                        {errors.username && <span className="error-message">{errors.username}</span>}
+                        {errors.name && <span className="error-message">{errors.name}</span>}
                     </div>
 
                     <div className="form-group">

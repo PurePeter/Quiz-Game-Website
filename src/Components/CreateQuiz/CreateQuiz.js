@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import './CreateQuiz.css';
 
 const CreateQuiz = ({ isAuthenticated, user }) => {
+    // API Configuration
+    const API_BASE = 'http://localhost:3000/api/v1';
+    
     const [quizData, setQuizData] = useState({
         title: '',
         description: '',
@@ -24,6 +27,7 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
 
     const [showQuestionForm, setShowQuestionForm] = useState(false);
     const [editingQuestionIndex, setEditingQuestionIndex] = useState(-1);
+    const [isLoading, setIsLoading] = useState(false);
 
     const categories = [
         { value: 'general', label: 'Tổng hợp' },
@@ -136,7 +140,7 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
         }
     };
 
-    const saveQuiz = () => {
+    const saveQuiz = async () => {
         if (!quizData.title.trim()) {
             alert('Vui lòng nhập tiêu đề quiz!');
             return;
@@ -147,33 +151,67 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
             return;
         }
 
-        // Mock save to localStorage
-        const savedQuizzes = JSON.parse(localStorage.getItem('userQuizzes') || '[]');
-        const newQuiz = {
-            ...quizData,
-            id: Date.now(),
-            createdBy: user?.id || 1,
-            createdAt: new Date().toISOString(),
-            status: 'draft'
-        };
+        setIsLoading(true);
         
-        savedQuizzes.push(newQuiz);
-        localStorage.setItem('userQuizzes', JSON.stringify(savedQuizzes));
-        
-        alert('Quiz đã được lưu thành công!');
-        
-        // Reset form
-        setQuizData({
-            title: '',
-            description: '',
-            category: 'general',
-            difficulty: 'medium',
-            timeLimit: 30,
-            questions: []
-        });
+        try {
+            // Get token from localStorage
+            const token = localStorage.getItem('quiz_token');
+            if (!token) {
+                alert('Vui lòng đăng nhập lại!');
+                return;
+            }
+
+            const quizPayload = {
+                title: quizData.title,
+                description: quizData.description,
+                category: quizData.category,
+                difficulty: quizData.difficulty,
+                timeLimit: quizData.timeLimit,
+                questions: quizData.questions.map(q => ({
+                    questionText: q.questionText,
+                    imageUrl: q.imageUrl,
+                    answerOptions: q.answerOptions
+                }))
+            };
+
+            console.log('🚀 Gửi quiz data:', quizPayload);
+
+            const response = await fetch(`${API_BASE}/quiz/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(quizPayload)
+            });
+
+            const data = await response.json();
+            console.log('📥 Quiz response:', data);
+
+            if (data.success) {
+                alert('✅ Quiz đã được lưu thành công!');
+                
+                // Reset form
+                setQuizData({
+                    title: '',
+                    description: '',
+                    category: 'general',
+                    difficulty: 'medium',
+                    timeLimit: 30,
+                    questions: []
+                });
+            } else {
+                alert(`❌ Lỗi: ${data.message}`);
+            }
+        } catch (error) {
+            console.error('❌ Lỗi tạo quiz:', error);
+            alert('❌ Lỗi kết nối server');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const publishQuiz = () => {
+    const publishQuiz = async () => {
         if (!quizData.title.trim()) {
             alert('Vui lòng nhập tiêu đề quiz!');
             return;
@@ -184,30 +222,65 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
             return;
         }
 
-        // Mock publish
-        const savedQuizzes = JSON.parse(localStorage.getItem('userQuizzes') || '[]');
-        const newQuiz = {
-            ...quizData,
-            id: Date.now(),
-            createdBy: user?.id || 1,
-            createdAt: new Date().toISOString(),
-            status: 'published'
-        };
+        setIsLoading(true);
         
-        savedQuizzes.push(newQuiz);
-        localStorage.setItem('userQuizzes', JSON.stringify(savedQuizzes));
-        
-        alert('Quiz đã được xuất bản thành công!');
-        
-        // Reset form
-        setQuizData({
-            title: '',
-            description: '',
-            category: 'general',
-            difficulty: 'medium',
-            timeLimit: 30,
-            questions: []
-        });
+        try {
+            // Get token from localStorage
+            const token = localStorage.getItem('quiz_token');
+            if (!token) {
+                alert('Vui lòng đăng nhập lại!');
+                return;
+            }
+
+            const quizPayload = {
+                title: quizData.title,
+                description: quizData.description,
+                category: quizData.category,
+                difficulty: quizData.difficulty,
+                timeLimit: quizData.timeLimit,
+                questions: quizData.questions.map(q => ({
+                    questionText: q.questionText,
+                    imageUrl: q.imageUrl,
+                    answerOptions: q.answerOptions
+                })),
+                status: 'published'
+            };
+
+            console.log('🚀 Xuất bản quiz:', quizPayload);
+
+            const response = await fetch(`${API_BASE}/quiz/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(quizPayload)
+            });
+
+            const data = await response.json();
+            console.log('📥 Publish response:', data);
+
+            if (data.success) {
+                alert('✅ Quiz đã được xuất bản thành công!');
+                
+                // Reset form
+                setQuizData({
+                    title: '',
+                    description: '',
+                    category: 'general',
+                    difficulty: 'medium',
+                    timeLimit: 30,
+                    questions: []
+                });
+            } else {
+                alert(`❌ Lỗi: ${data.message}`);
+            }
+        } catch (error) {
+            console.error('❌ Lỗi xuất bản quiz:', error);
+            alert('❌ Lỗi kết nối server');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     if (!isAuthenticated) {
@@ -459,16 +532,16 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                     <button 
                         className="save-draft-btn"
                         onClick={saveQuiz}
-                        disabled={quizData.questions.length === 0}
+                        disabled={quizData.questions.length === 0 || isLoading}
                     >
-                        💾 Lưu bản nháp
+                        {isLoading ? 'Đang lưu...' : '💾 Lưu bản nháp'}
                     </button>
                     <button 
                         className="publish-btn"
                         onClick={publishQuiz}
-                        disabled={quizData.questions.length === 0}
+                        disabled={quizData.questions.length === 0 || isLoading}
                     >
-                        🚀 Xuất bản
+                        {isLoading ? 'Đang xuất bản...' : '🚀 Xuất bản'}
                     </button>
                 </div>
             </div>
