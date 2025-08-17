@@ -6,6 +6,7 @@ import EndGame from './Components/EndGame/EndGame.js';
 import Header from './Components/Header/Header.js';
 import CreateQuiz from './Components/CreateQuiz/CreateQuiz.js';
 import History from './Components/History/History.js';
+import GameRoom from './Components/GameRoom/GameRoom.js';
 
 import './App.css';
 
@@ -62,8 +63,13 @@ function App() {
     const [showProfileModal, setShowProfileModal] = useState(false);
     const [token, setToken] = useState('');
 
-    // Add current page state
-    const [currentPage, setCurrentPage] = useState('lobby'); // Default to Lobby
+    // Current page state
+    const [currentPage, setCurrentPage] = useState('lobby');
+
+    // GameRoom state
+    const [showGameRoom, setShowGameRoom] = useState(false);
+    const [currentRoomCode, setCurrentRoomCode] = useState('');
+    const [currentQuizId, setCurrentQuizId] = useState('');
 
     useEffect(() => {
         setQuestions(mockQuestions);
@@ -109,12 +115,10 @@ function App() {
                     token: data.token
                 };
 
-                // Update state
                 setUser(userData);
                 setToken(data.token);
                 setIsAuthenticated(true);
                 
-                // Save to localStorage
                 localStorage.setItem('quizUser', JSON.stringify(userData));
                 localStorage.setItem('quiz_token', data.token);
                 
@@ -151,10 +155,6 @@ function App() {
 
             if (data.success) {
                 console.log('✅ App.js: Đăng ký thành công:', data.user);
-                
-                // Don't auto-login after registration
-                // User needs to login manually
-                
                 return { success: true, message: "Đăng ký thành công! Vui lòng đăng nhập." };
             } else {
                 console.log('❌ App.js: Đăng ký thất bại:', data.message);
@@ -173,7 +173,7 @@ function App() {
         localStorage.removeItem('quizUser');
         localStorage.removeItem('quiz_token');
         
-        // Reset quiz state when logging out
+        // Reset quiz state
         setCurrentQuestionIndex(0);
         setScore(0);
         setShowScore(false);
@@ -181,11 +181,31 @@ function App() {
         setIsCountingDown(false);
         setPlayerName('');
         
+        // Reset GameRoom state
+        setShowGameRoom(false);
+        setCurrentRoomCode('');
+        setCurrentQuizId('');
+        
         console.log('✅ User đã đăng xuất');
     };
 
     const handleShowProfile = () => {
         setShowProfileModal(true);
+    };
+
+    // GameRoom handlers
+    const handleEnterGameRoom = (roomCode, quizId) => {
+        console.log(' Entering game room:', { roomCode, quizId });
+        setCurrentRoomCode(roomCode);
+        setCurrentQuizId(quizId);
+        setShowGameRoom(true);
+    };
+
+    const handleBackToLobby = () => {
+        console.log('🏠 Going back to lobby');
+        setShowGameRoom(false);
+        setCurrentRoomCode('');
+        setCurrentQuizId('');
     };
 
     // Quiz handlers
@@ -213,13 +233,11 @@ function App() {
     };
 
     const startQuiz = (name) => {
-        // Check if user is authenticated before starting quiz
         if (!isAuthenticated) {
             alert('Vui lòng đăng nhập để chơi quiz!');
             return;
         }
         
-        // Use authenticated user's name
         const quizPlayerName = user ? user.name : 'Guest';
         setPlayerName(quizPlayerName);
         setShowScore(false);
@@ -236,7 +254,6 @@ function App() {
     const handlePageChange = (page) => {
         setCurrentPage(page);
         
-        // Reset quiz state when changing pages
         if (page !== 'quiz') {
             setCurrentQuestionIndex(0);
             setScore(0);
@@ -249,6 +266,7 @@ function App() {
 
     // Determine current page for header navigation
     const getCurrentPage = () => {
+        if (showGameRoom) return 'gameRoom';
         if (isQuizStarted || isCountingDown) return 'quiz';
         if (showScore) return 'history';
         return currentPage;
@@ -256,6 +274,17 @@ function App() {
 
     // Render content based on current page
     const renderContent = () => {
+        if (showGameRoom) {
+            return (
+                <GameRoom
+                    roomCode={currentRoomCode}
+                    quizId={currentQuizId}
+                    user={user}
+                    onBackToLobby={handleBackToLobby}
+                />
+            );
+        }
+
         if (isCountingDown) {
             return <CountDown initialCount={3} onFinish={handleCountdownFinish} />;
         }
@@ -308,6 +337,7 @@ function App() {
                     onStartQuiz={startQuiz} 
                     isAuthenticated={isAuthenticated}
                     user={user}
+                    onEnterGameRoom={handleEnterGameRoom}
                 />;
         }
     };
@@ -325,12 +355,10 @@ function App() {
                 onPageChange={handlePageChange}
             />
             
-            {/* Main Content with top margin to account for fixed header */}
             <div className="main-content">
                 {renderContent()}
             </div>
 
-            {/* Profile Modal */}
             {showProfileModal && (
                 <ProfileModal 
                     user={user}
@@ -351,62 +379,42 @@ const ProfileModal = ({ user, onClose, onUpdateUser }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const updatedUser = {
-            ...user,
-            ...formData,
-            avatar: `https://ui-avatars.com/api/?name=${formData.name}&background=4f46e5&color=fff`
-        };
-        
-        onUpdateUser(updatedUser);
-        localStorage.setItem('quizUser', JSON.stringify(updatedUser));
+        onUpdateUser({ ...user, ...formData });
         onClose();
-    };
-
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
     };
 
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h2>Hồ sơ cá nhân</h2>
+                    <h2>👤 Chỉnh sửa thông tin</h2>
                     <button className="modal-close" onClick={onClose}>×</button>
                 </div>
                 
-                <form onSubmit={handleSubmit} className="login-form">
+                <form onSubmit={handleSubmit} className="modal-body">
                     <div className="form-group">
-                        <label htmlFor="name">Tên hiển thị</label>
+                        <label>Tên</label>
                         <input
                             type="text"
-                            id="name"
-                            name="name"
                             value={formData.name}
-                            onChange={handleChange}
+                            onChange={(e) => setFormData({...formData, name: e.target.value})}
                             required
-                            placeholder="Nhập tên hiển thị"
                         />
                     </div>
                     
                     <div className="form-group">
-                        <label htmlFor="email">Email</label>
+                        <label>Email</label>
                         <input
                             type="email"
-                            id="email"
-                            name="email"
                             value={formData.email}
-                            onChange={handleChange}
+                            onChange={(e) => setFormData({...formData, email: e.target.value})}
                             required
-                            placeholder="Nhập email"
                         />
                     </div>
                     
-                    <div className="form-actions">
+                    <div className="modal-actions">
                         <button type="submit" className="submit-btn">
-                            Cập nhật
+                            💾 Lưu thay đổi
                         </button>
                         <button type="button" className="cancel-btn" onClick={onClose}>
                             Hủy

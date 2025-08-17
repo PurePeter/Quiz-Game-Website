@@ -1,33 +1,83 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { io } from 'socket.io-client';
 import './Lobby.css';
 
-const Lobby = ({ onStartQuiz, isAuthenticated, user }) => {
-    const [name, setName] = useState('');
+const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
+    const [socket, setSocket] = useState(null);
+    const [connected, setConnected] = useState(false);
+    const [authenticated, setAuthenticated] = useState(false);
     const [selectedQuiz, setSelectedQuiz] = useState(null);
     const [availableQuizzes, setAvailableQuizzes] = useState([]);
-    const [availableRooms, setAvailableRooms] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [showCreateRoom, setShowCreateRoom] = useState(false);
+    const [showJoinRoom, setShowJoinRoom] = useState(false); // ✅ Thêm state cho join room
     const [roomName, setRoomName] = useState('');
+    const [roomCode, setRoomCode] = useState(''); // ✅ Thêm state cho room code
     const [maxPlayers, setMaxPlayers] = useState(4);
-    const [roomPassword, setRoomPassword] = useState('');
+    const [currentRoom, setCurrentRoom] = useState(null);
+    const [playerName, setPlayerName] = useState('');
+    
+    const socketRef = useRef();
 
     // API Configuration
     const API_BASE = 'http://localhost:3000/api/v1';
 
-    // Load available quizzes when component mounts
+    // Initialize Socket.IO connection
     useEffect(() => {
         if (isAuthenticated) {
-            loadAvailableQuizzes();
-        }
-    }, [isAuthenticated]);
+            const newSocket = io('http://localhost:3000');
+            socketRef.current = newSocket;
 
-    // Load available rooms when quiz is selected
-    useEffect(() => {
-        if (selectedQuiz) {
-            loadAvailableRooms(selectedQuiz._id);
+            // Connection events
+            newSocket.on('connect', () => {
+                console.log('✅ Connected to Socket.IO server');
+                setConnected(true);
+                
+                // Authenticate with JWT token
+                const token = localStorage.getItem('quiz_token');
+                if (token) {
+                    newSocket.emit('authenticate', { token });
+                }
+            });
+
+            // Authentication events
+            newSocket.on('authenticated', (data) => {
+                console.log('✅ Authenticated successfully:', data);
+                setAuthenticated(true);
+            });
+
+            // Room events
+            newSocket.on('room_created', (data) => {
+                console.log('🏠 Room created:', data);
+                setCurrentRoom(data);
+                alert(`✅ Phòng đã được tạo thành công! Room Code: ${data.data.roomCode}`);
+                setShowCreateRoom(false);
+                
+                // Navigate to game room
+                if (onEnterGameRoom) {
+                    onEnterGameRoom(data.data.roomCode, selectedQuiz._id);
+                }
+            });
+
+            newSocket.on('room_joined', (data) => {
+                console.log('🏠 Room joined:', data);
+                setCurrentRoom(data);
+                alert('✅ Đã tham gia phòng thành công!');
+                setShowJoinRoom(false);
+                
+                // Navigate to game room
+                if (onEnterGameRoom) {
+                    onEnterGameRoom(data.data.roomCode, selectedQuiz._id);
+                }
+            });
+
+            setSocket(newSocket);
+
+            return () => {
+                newSocket.disconnect();
+            };
         }
-    }, [selectedQuiz]);
+    }, [isAuthenticated, selectedQuiz, onEnterGameRoom]);
 
     // Load available quizzes from backend
     const loadAvailableQuizzes = async () => {
@@ -49,45 +99,14 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user }) => {
         }
     };
 
-    // Load available rooms for a specific quiz
-    const loadAvailableRooms = async (quizId) => {
-        try {
-            const token = localStorage.getItem('quiz_token');
-            console.log('🔑 Token for loading rooms:', token ? 'Token exists' : 'No token');
-            
-            const response = await fetch(`${API_BASE}/room/quiz/${quizId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            
-            console.log('📡 Response status:', response.status);
-            console.log('📡 Response headers:', response.headers);
-            
-            const data = await response.json();
-            console.log('📥 Available rooms response:', data);
-            
-            if (data.success) {
-                setAvailableRooms(data.data || []);
-                console.log('📥 Available rooms for quiz:', data.data);
-            } else {
-                console.log('❌ Failed to load rooms:', data.message);
-                setAvailableRooms([]);
-            }
-        } catch (error) {
-            console.error('❌ Error loading rooms:', error);
-            setAvailableRooms([]);
+    // Load quizzes when authenticated
+    useEffect(() => {
+        if (authenticated) {
+            loadAvailableQuizzes();
         }
-    };
+    }, [authenticated]);
 
-    const handleStart = () => {
-        if (name.trim() === '') {
-            alert('Vui lòng nhập tên của bạn!');
-            return;
-        }
-        onStartQuiz(name);
-    };
-
+    // Create room via HTTP API
     const handleCreateRoom = async () => {
         if (!selectedQuiz) {
             alert('Vui lòng chọn một quiz để tạo phòng!');
@@ -103,11 +122,12 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user }) => {
             const token = localStorage.getItem('quiz_token');
             
             const roomData = {
-                name: roomName,
                 quizId: selectedQuiz._id,
-                maxPlayers: maxPlayers,
-                password: roomPassword || undefined,
-                createdBy: user._id
+                settings: {
+                    maxPlayers: maxPlayers || 8,
+                    autoStart: false,
+                    showLeaderboard: true
+                }
             };
 
             console.log('🚀 Creating room:', roomData);
@@ -125,12 +145,16 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user }) => {
             console.log('📥 Create room response:', data);
 
             if (data.success) {
-                alert('✅ Phòng đã được tạo thành công!');
+                alert(`✅ Phòng đã được tạo thành công! Room Code: ${data.data.roomCode}`);
                 setShowCreateRoom(false);
                 setRoomName('');
                 setMaxPlayers(4);
-                setRoomPassword('');
                 setSelectedQuiz(null);
+                
+                // Navigate to game room
+                if (onEnterGameRoom) {
+                    onEnterGameRoom(data.data.roomCode, selectedQuiz._id);
+                }
             } else {
                 alert(`❌ Lỗi tạo phòng: ${data.message}`);
             }
@@ -142,14 +166,19 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user }) => {
         }
     };
 
-    const handleJoinRoom = async (roomId) => {
+    // Join room via HTTP API
+    const handleJoinRoom = async () => {
+        if (!roomCode.trim()) {
+            alert('Vui lòng nhập room code!');
+            return;
+        }
+
         try {
             setIsLoading(true);
             const token = localStorage.getItem('quiz_token');
             
             const joinData = {
-                roomId: roomId,
-                password: ''
+                roomCode: roomCode.trim()
             };
 
             console.log('🚀 Joining room:', joinData);
@@ -168,7 +197,13 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user }) => {
 
             if (data.success) {
                 alert('✅ Đã tham gia phòng thành công!');
-                // TODO: Navigate to game room
+                setShowJoinRoom(false);
+                setRoomCode('');
+                
+                // Navigate to game room
+                if (onEnterGameRoom) {
+                    onEnterGameRoom(data.data.roomCode, data.data.quizId);
+                }
             } else {
                 alert(`❌ Lỗi tham gia phòng: ${data.message}`);
             }
@@ -178,6 +213,14 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user }) => {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleStart = () => {
+        if (playerName.trim() === '') {
+            alert('Vui lòng nhập tên của bạn!');
+            return;
+        }
+        onStartQuiz(playerName);
     };
 
     return (
@@ -209,8 +252,6 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user }) => {
                                         <h3>{quiz.title}</h3>
                                         <p>{quiz.description}</p>
                                         <div className="quiz-meta">
-                                            <span className="category">{quiz.category}</span>
-                                            <span className="difficulty">{quiz.difficulty}</span>
                                             <span className="questions">{quiz.questions?.length || 0} câu hỏi</span>
                                         </div>
                                     </div>
@@ -219,12 +260,6 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user }) => {
                         ) : (
                             <div className="no-quizzes">
                                 <p>Chưa có quiz nào. Hãy tạo quiz trước!</p>
-                                <button 
-                                    className="create-quiz-btn"
-                                    onClick={() => window.location.href = '#create'}
-                                >
-                                    🎯 Tạo Quiz
-                                </button>
                             </div>
                         )}
                     </div>
@@ -237,40 +272,19 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user }) => {
                                 <strong>Quiz đã chọn:</strong> {selectedQuiz.title}
                             </div>
                             
-                            {/* Available Rooms */}
-                            <div className="available-rooms">
-                                <h3>🚪 Phòng có sẵn</h3>
-                                {availableRooms.length > 0 ? (
-                                    <div className="room-grid">
-                                        {availableRooms.map((room) => (
-                                            <div key={room._id} className="room-card">
-                                                <h4>{room.name || `Phòng ${room.roomCode}`}</h4>
-                                                <div className="room-meta">
-                                                    <span className="players">{room.players?.length || 0}/{room.settings?.maxPlayers || 4} người chơi</span>
-                                                    <span className="status">{room.status}</span>
-                                                </div>
-                                                <button 
-                                                    className="join-room-btn"
-                                                    onClick={() => handleJoinRoom(room._id)}
-                                                >
-                                                    🚪 Tham Gia
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="no-rooms">
-                                        <p>Chưa có phòng nào cho quiz này.</p>
-                                    </div>
-                                )}
-                            </div>
-                            
                             <div className="action-buttons">
                                 <button 
                                     className="create-room-btn"
                                     onClick={() => setShowCreateRoom(true)}
                                 >
                                     🏠 Tạo Phòng Mới
+                                </button>
+                                
+                                <button 
+                                    className="join-room-btn"
+                                    onClick={() => setShowJoinRoom(true)}
+                                >
+                                    🚪 Tham Gia Phòng
                                 </button>
                             </div>
                         </div>
@@ -306,16 +320,6 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user }) => {
                                             <option value={8}>8 người</option>
                                         </select>
                                     </div>
-                                    
-                                    <div className="form-group">
-                                        <label>Mật khẩu phòng (tùy chọn)</label>
-                                        <input
-                                            type="password"
-                                            value={roomPassword}
-                                            onChange={(e) => setRoomPassword(e.target.value)}
-                                            placeholder="Để trống nếu không cần mật khẩu"
-                                        />
-                                    </div>
                                 </div>
                                 
                                 <div className="modal-actions">
@@ -328,8 +332,50 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user }) => {
                                     </button>
                                     <button 
                                         className="cancel-btn"
-                                        onClick={() => setShowCreateRoom(false)}
+                                        onClick={() => setShowCreateRoom(false)}>
+                                        Hủy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Join Room Modal */}
+                    {showJoinRoom && (
+                        <div className="modal-overlay" onClick={() => setShowJoinRoom(false)}>
+                            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                                <div className="modal-header">
+                                    <h2>🚪 Tham Gia Phòng</h2>
+                                    <button className="modal-close" onClick={() => setShowJoinRoom(false)}>×</button>
+                                </div>
+                                
+                                <div className="modal-body">
+                                    <div className="form-group">
+                                        <label>Room Code *</label>
+                                        <input
+                                            type="text"
+                                            value={roomCode}
+                                            onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+                                            placeholder="Nhập room code (ví dụ: 9F4O87)"
+                                            required
+                                            maxLength={6}
+                                            style={{ textTransform: 'uppercase' }}
+                                        />
+                                        <small>Nhập 6 ký tự room code để tham gia phòng</small>
+                                    </div>
+                                </div>
+                                
+                                <div className="modal-actions">
+                                    <button 
+                                        className="submit-btn"
+                                        onClick={handleJoinRoom}
+                                        disabled={isLoading}
                                     >
+                                        {isLoading ? 'Đang tham gia...' : '🚪 Tham Gia Phòng'}
+                                    </button>
+                                    <button 
+                                        className="cancel-btn"
+                                        onClick={() => setShowJoinRoom(false)}>
                                         Hủy
                                     </button>
                                 </div>
@@ -345,8 +391,8 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user }) => {
                             type="text"
                             className="name-input"
                             placeholder="Tên của bạn..."
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            value={playerName}
+                            onChange={(e) => setPlayerName(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && handleStart()}
                         />
                         <button className="start-button" onClick={handleStart}>

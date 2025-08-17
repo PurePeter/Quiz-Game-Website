@@ -164,14 +164,17 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
             const quizPayload = {
                 title: quizData.title,
                 description: quizData.description,
-                category: quizData.category,
-                difficulty: quizData.difficulty,
-                timeLimit: quizData.timeLimit,
-                questions: quizData.questions.map(q => ({
-                    questionText: q.questionText,
-                    imageUrl: q.imageUrl,
-                    answerOptions: q.answerOptions
-                }))
+                // Map to backend expected fields
+                timePerQuestion: quizData.timeLimit,
+                questions: quizData.questions.map(q => {
+                    const options = q.answerOptions.map(o => o.answerText);
+                    const correctIdx = q.answerOptions.findIndex(o => o.isCorrect);
+                    return {
+                        text: q.questionText,
+                        options,
+                        correctAnswer: Math.max(0, correctIdx)
+                    };
+                })
             };
 
             console.log('🚀 Gửi quiz data:', quizPayload);
@@ -235,15 +238,16 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
             const quizPayload = {
                 title: quizData.title,
                 description: quizData.description,
-                category: quizData.category,
-                difficulty: quizData.difficulty,
-                timeLimit: quizData.timeLimit,
-                questions: quizData.questions.map(q => ({
-                    questionText: q.questionText,
-                    imageUrl: q.imageUrl,
-                    answerOptions: q.answerOptions
-                })),
-                status: 'published'
+                timePerQuestion: quizData.timeLimit,
+                questions: quizData.questions.map(q => {
+                    const options = q.answerOptions.map(o => o.answerText);
+                    const correctIdx = q.answerOptions.findIndex(o => o.isCorrect);
+                    return {
+                        text: q.questionText,
+                        options,
+                        correctAnswer: Math.max(0, correctIdx)
+                    };
+                })
             };
 
             console.log('🚀 Xuất bản quiz:', quizPayload);
