@@ -1,0 +1,109 @@
+.chart-bar-demo {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  background: #eee;
+  padding: 8px;
+  margin: 4px 0 16px 0;
+  border-radius: 5px;
+  border: 1px solid #222;
+}
+
+.chart-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 8px;
+}
+
+.chart-bar-value {
+  font-weight: bold;
+  font-size: 24px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+}
+
+.chart-bar-rect {
+  width: 80px;
+  border-radius: 5px;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.chart-bar-shape {
+  width: 80px;
+  height: 24px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chart-bar-col:nth-child(1) .chart-bar-shape {
+  background-color: #e74c3c !important;
+}
+
+.chart-bar-col:nth-child(2) .chart-bar-shape {
+  background-color: #3498db !important;
+}
+
+.chart-bar-col:nth-child(3) .chart-bar-shape {
+  background-color: #f1c40f !important;
+}
+
+.chart-bar-col:nth-child(4) .chart-bar-shape {
+  background-color: #27ae60 !important;
+}
+
+/* CSS shapes */
+.chart-bar-shape-triangle {
+  background-color: transparent;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 12px solid #fff;
+}
+
+.chart-bar-shape-square {
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+}
+
+.chart-bar-shape-circle {
+  width: 11px;
+  height: 11px;
+  background-color: #fff;
+  border-radius: 50%;
+}
+
+.chart-bar-shape-star {
+  width: 13px;
+  height: 13px;
+  background-color: #fff;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+/* Responsive */
+/* For moblie */
+@media screen and (max-width: 480px) {
+  .chart-bar-demo {
+    max-width: 94%;
+  }
+
+  .chart-bar-shape,
+  .chart-bar-rect {
+    width: 60px;
+  }
+
+  .chart-bar-value {
+    font-size: 20px;
+  }
+}

@@ -1,0 +1,71 @@
+.App {
+  text-align: center;
+  position: relative;
+}
+
+.score-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #3c2a75;
+  color: white;
+  font-size: 2.2rem;
+}
+
+.score-section button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background-color: #ffc107;
+  color: #252d4a;
+  font-weight: bold;
+}
+
+/* Add margin-top to account for fixed header */
+.main-content {
+  margin-top: 70px;
+  min-height: calc(100vh - 70px);
+}
+
+/* Responsive header spacing */
+@media (max-width: 480px) {
+  .main-content {
+    margin-top: 60px;
+    min-height: calc(100vh - 60px);
+  }
+}
+
+/* Additional enhancements for better UX */
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+.App {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Enhance modal styles to match header theme */
+.modal-overlay {
+  backdrop-filter: blur(8px);
+}
+
+/* Add smooth transitions */
+* {
+  box-sizing: border-box;
+}
+
+/* Loading state styling */
+h2 {
+  text-align: center;
+  color: #667eea;
+  margin-top: 2rem;
+}
