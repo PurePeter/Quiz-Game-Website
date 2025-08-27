@@ -23,6 +23,27 @@ A modern, interactive quiz application built with React featuring user authentic
 
 ## 🚀 Features
 
+## Giới thiệu
+
+Chúng em sử dụng Node.js và Socket.IO cho phần server để đảm bảo tốc độ phản hồi nhanh, đồng thời xây dựng giao diện hiện đại với Next.js và Tailwind CSS. Dữ liệu câu hỏi được lưu trữ linh hoạt bằng file JSON hoặc trực tiếp trong code, giúp dễ dàng mở rộng và cập nhật nội dung.
+
+### 🎨 UI/UX Features
+
+-   **📱 Fully Responsive** - Mobile-first design approach
+-   **🎨 Modern Design** - Gradient backgrounds and smooth animations
+-   **🧭 Navigation Header** - Sticky header with user menu
+-   **💾 Persistent State** - LocalStorage for user sessions
+-   **🔄 Modal System** - Login/Register/Profile modals
+-   **⚡ Loading States** - Smooth transitions and feedback
+
+Node.js là một môi trường chạy JavaScript phía máy chủ (server-side). Thay vì chạy JavaScript chỉ trong trình duyệt (như trước đây), Node.js cho phép bạn viết ứng dụng backend bằng JavaScript và chạy trực tiếp trên máy tính của bạn hoặc trên server.
+
+# 🎯 QuizMaster - React Quiz Application
+
+A modern, interactive quiz application built with React featuring user authentication, responsive design, and beautiful UI.
+
+## 🚀 Features
+
 ### ✨ Core Features
 
 -   **🎮 Interactive Quiz System** - Multiple-choice questions with scoring
