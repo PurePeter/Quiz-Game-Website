@@ -14,7 +14,7 @@ const History = ({ isAuthenticated, user }) => {
                 score: 85,
                 totalQuestions: 10,
                 date: '2024-01-15T10:30:00',
-                timeSpent: 450
+                timeSpent: 450,
             },
             {
                 id: 2,
@@ -22,7 +22,7 @@ const History = ({ isAuthenticated, user }) => {
                 score: 92,
                 totalQuestions: 15,
                 date: '2024-01-14T14:20:00',
-                timeSpent: 720
+                timeSpent: 720,
             },
             {
                 id: 3,
@@ -30,8 +30,8 @@ const History = ({ isAuthenticated, user }) => {
                 score: 78,
                 totalQuestions: 12,
                 date: '2024-01-13T09:15:00',
-                timeSpent: 600
-            }
+                timeSpent: 600,
+            },
         ];
 
         setTimeout(() => {
@@ -47,7 +47,7 @@ const History = ({ isAuthenticated, user }) => {
             month: 'long',
             day: 'numeric',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
         });
     };
 
@@ -58,10 +58,13 @@ const History = ({ isAuthenticated, user }) => {
                     <div className="auth-icon">🔐</div>
                     <h2>Đăng nhập để xem lịch sử</h2>
                     <p>Vui lòng đăng nhập để xem lịch sử chơi quiz của bạn.</p>
-                    <button className="login-btn-primary" onClick={() => {
-                        const loginBtn = document.querySelector('.login-btn');
-                        if (loginBtn) loginBtn.click();
-                    }}>
+                    <button
+                        className="login-btn-primary"
+                        onClick={() => {
+                            const loginBtn = document.querySelector('.login-btn');
+                            if (loginBtn) loginBtn.click();
+                        }}
+                    >
                         Đăng nhập
                     </button>
                 </div>
@@ -107,7 +110,10 @@ const History = ({ isAuthenticated, user }) => {
                                     </div>
                                     <div className="detail-item">
                                         <span>Thời gian:</span>
-                                        <span>{Math.floor(item.timeSpent / 60)}:{String(item.timeSpent % 60).padStart(2, '0')}</span>
+                                        <span>
+                                            {Math.floor(item.timeSpent / 60)}:
+                                            {String(item.timeSpent % 60).padStart(2, '0')}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -119,4 +125,4 @@ const History = ({ isAuthenticated, user }) => {
     );
 };
 
-export default History; 
+export default History;

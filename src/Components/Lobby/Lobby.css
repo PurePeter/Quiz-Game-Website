@@ -172,7 +172,8 @@
     flex-wrap: wrap;
 }
 
-.create-room-btn, .join-room-btn {
+.create-room-btn,
+.join-room-btn {
     background: #4f46e5;
     color: white;
     border: none;
@@ -183,7 +184,8 @@
     transition: background 0.3s ease;
 }
 
-.create-room-btn:hover, .join-room-btn:hover {
+.create-room-btn:hover,
+.join-room-btn:hover {
     background: #4338ca;
 }
 
@@ -267,7 +269,8 @@
     font-weight: 500;
 }
 
-.form-group input, .form-group select {
+.form-group input,
+.form-group select {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #d1d5db;
@@ -276,7 +279,8 @@
     transition: border-color 0.3s ease;
 }
 
-.form-group input:focus, .form-group select:focus {
+.form-group input:focus,
+.form-group select:focus {
     outline: none;
     border-color: #4f46e5;
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
@@ -290,7 +294,8 @@
     justify-content: flex-end;
 }
 
-.submit-btn, .cancel-btn {
+.submit-btn,
+.cancel-btn {
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
     font-size: 1rem;
@@ -385,19 +390,19 @@
     .lobby-container {
         padding: 1rem;
     }
-    
+
     .lobby-title {
         font-size: 2rem;
     }
-    
+
     .quiz-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .action-buttons {
         flex-direction: column;
     }
-    
+
     .modal-content {
         width: 95%;
         margin: 1rem;

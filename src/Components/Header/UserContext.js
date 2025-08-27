@@ -8,14 +8,14 @@ const USER_ACTIONS = {
     LOGIN: 'LOGIN',
     LOGOUT: 'LOGOUT',
     UPDATE_PROFILE: 'UPDATE_PROFILE',
-    SET_LOADING: 'SET_LOADING'
+    SET_LOADING: 'SET_LOADING',
 };
 
 // Initial state
 const initialState = {
     user: null,
     isAuthenticated: false,
-    isLoading: true
+    isLoading: true,
 };
 
 // Reducer
@@ -26,24 +26,24 @@ const userReducer = (state, action) => {
                 ...state,
                 user: action.payload,
                 isAuthenticated: true,
-                isLoading: false
+                isLoading: false,
             };
         case USER_ACTIONS.LOGOUT:
             return {
                 ...state,
                 user: null,
                 isAuthenticated: false,
-                isLoading: false
+                isLoading: false,
             };
         case USER_ACTIONS.UPDATE_PROFILE:
             return {
                 ...state,
-                user: { ...state.user, ...action.payload }
+                user: { ...state.user, ...action.payload },
             };
         case USER_ACTIONS.SET_LOADING:
             return {
                 ...state,
-                isLoading: action.payload
+                isLoading: action.payload,
             };
         default:
             return state;
@@ -107,14 +107,10 @@ export const UserProvider = ({ children }) => {
         ...state,
         login,
         logout,
-        updateProfile
+        updateProfile,
     };
 
-    return (
-        <UserContext.Provider value={value}>
-            {children}
-        </UserContext.Provider>
-    );
+    return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
 // Custom hook to use user context
@@ -126,4 +122,4 @@ export const useUser = () => {
     return context;
 };
 
-export default UserContext; 
+export default UserContext;

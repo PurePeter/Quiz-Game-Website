@@ -4,14 +4,14 @@ import './CreateQuiz.css';
 const CreateQuiz = ({ isAuthenticated, user }) => {
     // API Configuration
     const API_BASE = 'http://localhost:3000/api/v1';
-    
+
     const [quizData, setQuizData] = useState({
         title: '',
         description: '',
         category: 'general',
         difficulty: 'medium',
         timeLimit: 30,
-        questions: []
+        questions: [],
     });
 
     const [currentQuestion, setCurrentQuestion] = useState({
@@ -21,8 +21,8 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
             { answerText: '', isCorrect: false },
             { answerText: '', isCorrect: false },
             { answerText: '', isCorrect: false },
-            { answerText: '', isCorrect: false }
-        ]
+            { answerText: '', isCorrect: false },
+        ],
     });
 
     const [showQuestionForm, setShowQuestionForm] = useState(false);
@@ -37,45 +37,45 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
         { value: 'geography', label: 'Địa lý' },
         { value: 'literature', label: 'Văn học' },
         { value: 'sports', label: 'Thể thao' },
-        { value: 'entertainment', label: 'Giải trí' }
+        { value: 'entertainment', label: 'Giải trí' },
     ];
 
     const difficulties = [
         { value: 'easy', label: 'Dễ' },
         { value: 'medium', label: 'Trung bình' },
-        { value: 'hard', label: 'Khó' }
+        { value: 'hard', label: 'Khó' },
     ];
 
     const handleQuizDataChange = (field, value) => {
-        setQuizData(prev => ({
+        setQuizData((prev) => ({
             ...prev,
-            [field]: value
+            [field]: value,
         }));
     };
 
     const handleQuestionChange = (field, value) => {
-        setCurrentQuestion(prev => ({
+        setCurrentQuestion((prev) => ({
             ...prev,
-            [field]: value
+            [field]: value,
         }));
     };
 
     const handleAnswerOptionChange = (index, field, value) => {
-        setCurrentQuestion(prev => ({
+        setCurrentQuestion((prev) => ({
             ...prev,
-            answerOptions: prev.answerOptions.map((option, i) => 
-                i === index ? { ...option, [field]: value } : option
-            )
+            answerOptions: prev.answerOptions.map((option, i) =>
+                i === index ? { ...option, [field]: value } : option,
+            ),
         }));
     };
 
     const handleCorrectAnswerChange = (index) => {
-        setCurrentQuestion(prev => ({
+        setCurrentQuestion((prev) => ({
             ...prev,
             answerOptions: prev.answerOptions.map((option, i) => ({
                 ...option,
-                isCorrect: i === index
-            }))
+                isCorrect: i === index,
+            })),
         }));
     };
 
@@ -85,13 +85,13 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
             return;
         }
 
-        const hasCorrectAnswer = currentQuestion.answerOptions.some(option => option.isCorrect);
+        const hasCorrectAnswer = currentQuestion.answerOptions.some((option) => option.isCorrect);
         if (!hasCorrectAnswer) {
             alert('Vui lòng chọn ít nhất một đáp án đúng!');
             return;
         }
 
-        const hasValidAnswers = currentQuestion.answerOptions.every(option => option.answerText.trim());
+        const hasValidAnswers = currentQuestion.answerOptions.every((option) => option.answerText.trim());
         if (!hasValidAnswers) {
             alert('Vui lòng điền đầy đủ tất cả các đáp án!');
             return;
@@ -101,13 +101,13 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
             // Edit existing question
             const updatedQuestions = [...quizData.questions];
             updatedQuestions[editingQuestionIndex] = { ...currentQuestion };
-            setQuizData(prev => ({ ...prev, questions: updatedQuestions }));
+            setQuizData((prev) => ({ ...prev, questions: updatedQuestions }));
             setEditingQuestionIndex(-1);
         } else {
             // Add new question
-            setQuizData(prev => ({
+            setQuizData((prev) => ({
                 ...prev,
-                questions: [...prev.questions, { ...currentQuestion }]
+                questions: [...prev.questions, { ...currentQuestion }],
             }));
         }
 
@@ -119,8 +119,8 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                 { answerText: '', isCorrect: false },
                 { answerText: '', isCorrect: false },
                 { answerText: '', isCorrect: false },
-                { answerText: '', isCorrect: false }
-            ]
+                { answerText: '', isCorrect: false },
+            ],
         });
         setShowQuestionForm(false);
     };
@@ -133,9 +133,9 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
 
     const deleteQuestion = (index) => {
         if (window.confirm('Bạn có chắc muốn xóa câu hỏi này?')) {
-            setQuizData(prev => ({
+            setQuizData((prev) => ({
                 ...prev,
-                questions: prev.questions.filter((_, i) => i !== index)
+                questions: prev.questions.filter((_, i) => i !== index),
             }));
         }
     };
@@ -152,7 +152,7 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
         }
 
         setIsLoading(true);
-        
+
         try {
             // Get token from localStorage
             const token = localStorage.getItem('quiz_token');
@@ -166,15 +166,15 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                 description: quizData.description,
                 // Map to backend expected fields
                 timePerQuestion: quizData.timeLimit,
-                questions: quizData.questions.map(q => {
-                    const options = q.answerOptions.map(o => o.answerText);
-                    const correctIdx = q.answerOptions.findIndex(o => o.isCorrect);
+                questions: quizData.questions.map((q) => {
+                    const options = q.answerOptions.map((o) => o.answerText);
+                    const correctIdx = q.answerOptions.findIndex((o) => o.isCorrect);
                     return {
                         text: q.questionText,
                         options,
-                        correctAnswer: Math.max(0, correctIdx)
+                        correctAnswer: Math.max(0, correctIdx),
                     };
-                })
+                }),
             };
 
             console.log('🚀 Gửi quiz data:', quizPayload);
@@ -183,9 +183,9 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(quizPayload)
+                body: JSON.stringify(quizPayload),
             });
 
             const data = await response.json();
@@ -193,7 +193,7 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
 
             if (data.success) {
                 alert('✅ Quiz đã được lưu thành công!');
-                
+
                 // Reset form
                 setQuizData({
                     title: '',
@@ -201,7 +201,7 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                     category: 'general',
                     difficulty: 'medium',
                     timeLimit: 30,
-                    questions: []
+                    questions: [],
                 });
             } else {
                 alert(`❌ Lỗi: ${data.message}`);
@@ -226,7 +226,7 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
         }
 
         setIsLoading(true);
-        
+
         try {
             // Get token from localStorage
             const token = localStorage.getItem('quiz_token');
@@ -239,15 +239,15 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                 title: quizData.title,
                 description: quizData.description,
                 timePerQuestion: quizData.timeLimit,
-                questions: quizData.questions.map(q => {
-                    const options = q.answerOptions.map(o => o.answerText);
-                    const correctIdx = q.answerOptions.findIndex(o => o.isCorrect);
+                questions: quizData.questions.map((q) => {
+                    const options = q.answerOptions.map((o) => o.answerText);
+                    const correctIdx = q.answerOptions.findIndex((o) => o.isCorrect);
                     return {
                         text: q.questionText,
                         options,
-                        correctAnswer: Math.max(0, correctIdx)
+                        correctAnswer: Math.max(0, correctIdx),
                     };
-                })
+                }),
             };
 
             console.log('🚀 Xuất bản quiz:', quizPayload);
@@ -256,9 +256,9 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(quizPayload)
+                body: JSON.stringify(quizPayload),
             });
 
             const data = await response.json();
@@ -266,7 +266,7 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
 
             if (data.success) {
                 alert('✅ Quiz đã được xuất bản thành công!');
-                
+
                 // Reset form
                 setQuizData({
                     title: '',
@@ -274,7 +274,7 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                     category: 'general',
                     difficulty: 'medium',
                     timeLimit: 30,
-                    questions: []
+                    questions: [],
                 });
             } else {
                 alert(`❌ Lỗi: ${data.message}`);
@@ -294,10 +294,13 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                     <div className="auth-icon">🔐</div>
                     <h2>Đăng nhập để tạo Quiz</h2>
                     <p>Vui lòng đăng nhập để sử dụng tính năng tạo Quiz.</p>
-                    <button className="login-btn-primary" onClick={() => {
-                        const loginBtn = document.querySelector('.login-btn');
-                        if (loginBtn) loginBtn.click();
-                    }}>
+                    <button
+                        className="login-btn-primary"
+                        onClick={() => {
+                            const loginBtn = document.querySelector('.login-btn');
+                            if (loginBtn) loginBtn.click();
+                        }}
+                    >
                         Đăng nhập
                     </button>
                 </div>
@@ -347,7 +350,7 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                                 value={quizData.category}
                                 onChange={(e) => handleQuizDataChange('category', e.target.value)}
                             >
-                                {categories.map(cat => (
+                                {categories.map((cat) => (
                                     <option key={cat.value} value={cat.value}>
                                         {cat.label}
                                     </option>
@@ -362,7 +365,7 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                                 value={quizData.difficulty}
                                 onChange={(e) => handleQuizDataChange('difficulty', e.target.value)}
                             >
-                                {difficulties.map(diff => (
+                                {difficulties.map((diff) => (
                                     <option key={diff.value} value={diff.value}>
                                         {diff.label}
                                     </option>
@@ -388,10 +391,7 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                 <div className="questions-section">
                     <div className="questions-header">
                         <h2>❓ Câu hỏi ({quizData.questions.length})</h2>
-                        <button 
-                            className="add-question-btn"
-                            onClick={() => setShowQuestionForm(true)}
-                        >
+                        <button className="add-question-btn" onClick={() => setShowQuestionForm(true)}>
                             + Thêm câu hỏi
                         </button>
                     </div>
@@ -400,7 +400,7 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                     {showQuestionForm && (
                         <div className="question-form">
                             <h3>{editingQuestionIndex >= 0 ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi mới'}</h3>
-                            
+
                             <div className="form-group">
                                 <label htmlFor="question-text">Nội dung câu hỏi *</label>
                                 <textarea
@@ -438,7 +438,9 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                                         <input
                                             type="text"
                                             value={option.answerText}
-                                            onChange={(e) => handleAnswerOptionChange(index, 'answerText', e.target.value)}
+                                            onChange={(e) =>
+                                                handleAnswerOptionChange(index, 'answerText', e.target.value)
+                                            }
                                             placeholder={`Đáp án ${index + 1}...`}
                                             required
                                         />
@@ -450,15 +452,11 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                             </div>
 
                             <div className="question-actions">
-                                <button 
-                                    type="button" 
-                                    className="save-question-btn"
-                                    onClick={addQuestion}
-                                >
+                                <button type="button" className="save-question-btn" onClick={addQuestion}>
                                     {editingQuestionIndex >= 0 ? 'Cập nhật' : 'Thêm câu hỏi'}
                                 </button>
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     className="cancel-btn"
                                     onClick={() => {
                                         setShowQuestionForm(false);
@@ -470,8 +468,8 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                                                 { answerText: '', isCorrect: false },
                                                 { answerText: '', isCorrect: false },
                                                 { answerText: '', isCorrect: false },
-                                                { answerText: '', isCorrect: false }
-                                            ]
+                                                { answerText: '', isCorrect: false },
+                                            ],
                                         });
                                     }}
                                 >
@@ -488,16 +486,10 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                                 <div className="question-header">
                                     <span className="question-number">Câu {index + 1}</span>
                                     <div className="question-actions">
-                                        <button 
-                                            className="edit-btn"
-                                            onClick={() => editQuestion(index)}
-                                        >
+                                        <button className="edit-btn" onClick={() => editQuestion(index)}>
                                             ✏️
                                         </button>
-                                        <button 
-                                            className="delete-btn"
-                                            onClick={() => deleteQuestion(index)}
-                                        >
+                                        <button className="delete-btn" onClick={() => deleteQuestion(index)}>
                                             🗑️
                                         </button>
                                     </div>
@@ -505,9 +497,9 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                                 <div className="question-content">
                                     <p className="question-text">{question.questionText}</p>
                                     {question.imageUrl && (
-                                        <img 
-                                            src={question.imageUrl} 
-                                            alt="Question" 
+                                        <img
+                                            src={question.imageUrl}
+                                            alt="Question"
                                             className="question-image"
                                             onError={(e) => {
                                                 e.target.style.display = 'none';
@@ -516,8 +508,8 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
                                     )}
                                     <div className="answer-list">
                                         {question.answerOptions.map((option, optIndex) => (
-                                            <div 
-                                                key={optIndex} 
+                                            <div
+                                                key={optIndex}
                                                 className={`answer-item ${option.isCorrect ? 'correct' : ''}`}
                                             >
                                                 {option.answerText}
@@ -533,14 +525,14 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
 
                 {/* Save Actions */}
                 <div className="save-actions">
-                    <button 
+                    <button
                         className="save-draft-btn"
                         onClick={saveQuiz}
                         disabled={quizData.questions.length === 0 || isLoading}
                     >
                         {isLoading ? 'Đang lưu...' : '💾 Lưu bản nháp'}
                     </button>
-                    <button 
+                    <button
                         className="publish-btn"
                         onClick={publishQuiz}
                         disabled={quizData.questions.length === 0 || isLoading}
@@ -553,4 +545,4 @@ const CreateQuiz = ({ isAuthenticated, user }) => {
     );
 };
 
-export default CreateQuiz; 
+export default CreateQuiz;

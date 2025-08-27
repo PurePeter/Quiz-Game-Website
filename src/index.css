@@ -11,3 +11,71 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.header,
+.edit-profile-content,
+.modal-content,
+.nav-link,
+.user-button,
+.user-dropdown,
+.dropdown-item,
+.settings-container,
+select,
+input[type="text"],
+input[type="email"] {
+  transition: background-color 0.25s, color 0.25s, border-color 0.25s;
+}
+
+body.dark-mode .header,
+body.dark-mode,
+body.dark-mode .edit-profile-content,
+body.dark-mode .modal-content {
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #333;
+  color: #ffffff;
+}
+
+body.dark-mode .nav-link {
+  color: #ccc;
+}
+
+body.dark-mode .nav-link.active {
+  color: #fff;
+  border-bottom: 2px solid #fff;
+}
+
+body.dark-mode .user-button {
+  background-color: #333;
+}
+
+body.dark-mode .user-dropdown {
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+}
+
+body.dark-mode .dropdown-item {
+  color: #ccc;
+}
+
+body.dark-mode .dropdown-item:hover {
+  background-color: #333;
+}
+
+body.dark-mode .settings-container {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+body.dark-mode select,
+body.dark-mode input[type="text"],
+body.dark-mode input[type="email"] {
+  background-color: #333;
+  color: #fff;
+  border-color: #555;
+}

@@ -7,6 +7,10 @@ import Header from './Components/Header/Header.js';
 import CreateQuiz from './Components/CreateQuiz/CreateQuiz.js';
 import History from './Components/History/History.js';
 import GameRoom from './Components/GameRoom/GameRoom.js';
+import Settings from './Components/Settings/Settings.js';
+import EditProfile from './Components/EditProfile/EditProfile.js';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import './App.css';
 
@@ -60,7 +64,6 @@ function App() {
     // Authentication state
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState(null);
-    const [showProfileModal, setShowProfileModal] = useState(false);
     const [token, setToken] = useState('');
 
     // Current page state
@@ -73,11 +76,11 @@ function App() {
 
     useEffect(() => {
         setQuestions(mockQuestions);
-        
+
         // Check if user is already logged in (localStorage)
         const savedUser = localStorage.getItem('quizUser');
         const savedToken = localStorage.getItem('quiz_token');
-        
+
         if (savedUser && savedToken) {
             const userData = JSON.parse(savedUser);
             setUser(userData);
@@ -91,7 +94,7 @@ function App() {
     const handleLogin = async (credentials) => {
         try {
             console.log('🔑 App.js: Bắt đầu đăng nhập với API...');
-            
+
             const response = await fetch(`${API_BASE}/auth/login`, {
                 method: 'POST',
                 headers: {
@@ -99,8 +102,8 @@ function App() {
                 },
                 body: JSON.stringify({
                     email: credentials.email,
-                    password: credentials.password
-                })
+                    password: credentials.password,
+                }),
             });
 
             const data = await response.json();
@@ -112,24 +115,27 @@ function App() {
                     name: data.user.name,
                     email: data.user.email,
                     avatar: `https://ui-avatars.com/api/?name=${data.user.name}&background=4f46e5&color=fff`,
-                    token: data.token
+                    token: data.token,
                 };
 
                 setUser(userData);
                 setToken(data.token);
                 setIsAuthenticated(true);
-                
+
                 localStorage.setItem('quizUser', JSON.stringify(userData));
                 localStorage.setItem('quiz_token', data.token);
-                
+
                 console.log('✅ App.js: Đăng nhập thành công:', userData);
+                toast.success('Đăng nhập thành công!');
                 return { success: true, user: userData };
             } else {
                 console.log('❌ App.js: Đăng nhập thất bại:', data.message || 'Không có thông tin user');
+                toast.error(data.message || 'Đăng nhập thất bại!');
                 return { success: false, message: data.message || 'Không có thông tin user' };
             }
         } catch (error) {
             console.error('❌ App.js: Lỗi đăng nhập:', error);
+            toast.error('Lỗi kết nối server');
             return { success: false, message: 'Lỗi kết nối server' };
         }
     };
@@ -137,7 +143,7 @@ function App() {
     const handleRegister = async (userData) => {
         try {
             console.log('🚀 App.js: Bắt đầu đăng ký với API...');
-            
+
             const response = await fetch(`${API_BASE}/auth/register`, {
                 method: 'POST',
                 headers: {
@@ -146,8 +152,8 @@ function App() {
                 body: JSON.stringify({
                     name: userData.name,
                     email: userData.email,
-                    password: userData.password
-                })
+                    password: userData.password,
+                }),
             });
 
             const data = await response.json();
@@ -155,13 +161,16 @@ function App() {
 
             if (data.success) {
                 console.log('✅ App.js: Đăng ký thành công:', data.user);
-                return { success: true, message: "Đăng ký thành công! Vui lòng đăng nhập." };
+                toast.success('Đăng ký thành công! Vui lòng đăng nhập.');
+                return { success: true, message: 'Đăng ký thành công! Vui lòng đăng nhập.' };
             } else {
                 console.log('❌ App.js: Đăng ký thất bại:', data.message);
+                toast.error(data.message || 'Đăng ký thất bại!');
                 return { success: false, message: data.message };
             }
         } catch (error) {
             console.error('❌ App.js: Lỗi đăng ký:', error);
+            toast.error('Lỗi kết nối server');
             return { success: false, message: 'Lỗi kết nối server' };
         }
     };
@@ -172,7 +181,7 @@ function App() {
         setIsAuthenticated(false);
         localStorage.removeItem('quizUser');
         localStorage.removeItem('quiz_token');
-        
+
         // Reset quiz state
         setCurrentQuestionIndex(0);
         setScore(0);
@@ -180,17 +189,14 @@ function App() {
         setIsQuizStarted(false);
         setIsCountingDown(false);
         setPlayerName('');
-        
+
         // Reset GameRoom state
         setShowGameRoom(false);
         setCurrentRoomCode('');
         setCurrentQuizId('');
-        
-        console.log('✅ User đã đăng xuất');
-    };
 
-    const handleShowProfile = () => {
-        setShowProfileModal(true);
+        console.log('✅ User đã đăng xuất');
+        toast.success('Đăng xuất thành công!');
     };
 
     // GameRoom handlers
@@ -234,10 +240,10 @@ function App() {
 
     const startQuiz = (name) => {
         if (!isAuthenticated) {
-            alert('Vui lòng đăng nhập để chơi quiz!');
+            toast.warn('Vui lòng đăng nhập để chơi quiz!');
             return;
         }
-        
+
         const quizPlayerName = user ? user.name : 'Guest';
         setPlayerName(quizPlayerName);
         setShowScore(false);
@@ -253,7 +259,7 @@ function App() {
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
-        
+
         if (page !== 'quiz') {
             setCurrentQuestionIndex(0);
             setScore(0);
@@ -325,105 +331,67 @@ function App() {
             case 'history':
                 return <History isAuthenticated={isAuthenticated} user={user} />;
             case 'leaderboard':
-                return <EndGame 
-                    score={0} 
-                    totalQuestions={0} 
-                    onFinish={() => {}} 
-                    playerName=""
-                    showLeaderboardOnly={true}
-                />;
+                return (
+                    <EndGame
+                        score={0}
+                        totalQuestions={0}
+                        onFinish={() => {}}
+                        playerName=""
+                        showLeaderboardOnly={true}
+                    />
+                );
+            case 'settings':
+                return <Settings />;
+            case 'edit-profile':
+                return (
+                    <EditProfile
+                        user={user}
+                        onClose={() => handlePageChange('lobby')}
+                        onUpdateUser={(updatedUser) => {
+                            setUser(updatedUser);
+                            toast.success('Hồ sơ đã được cập nhật!');
+                        }}
+                    />
+                );
             default:
-                return <Lobby 
-                    onStartQuiz={startQuiz} 
-                    isAuthenticated={isAuthenticated}
-                    user={user}
-                    onEnterGameRoom={handleEnterGameRoom}
-                />;
+                return (
+                    <Lobby
+                        onStartQuiz={startQuiz}
+                        isAuthenticated={isAuthenticated}
+                        user={user}
+                        onEnterGameRoom={handleEnterGameRoom}
+                    />
+                );
         }
     };
 
     return (
         <div className="App">
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             <Header
                 isAuthenticated={isAuthenticated}
                 user={user}
                 onLogin={handleLogin}
                 onRegister={handleRegister}
                 onLogout={handleLogout}
-                onShowProfile={handleShowProfile}
+                onShowProfile={() => handlePageChange('edit-profile')}
                 currentPage={getCurrentPage()}
                 onPageChange={handlePageChange}
             />
-            
-            <div className="main-content">
-                {renderContent()}
-            </div>
 
-            {showProfileModal && (
-                <ProfileModal 
-                    user={user}
-                    onClose={() => setShowProfileModal(false)}
-                    onUpdateUser={setUser}
-                />
-            )}
+            <div className="main-content">{renderContent()}</div>
         </div>
     );
 }
-
-// Profile Modal Component
-const ProfileModal = ({ user, onClose, onUpdateUser }) => {
-    const [formData, setFormData] = useState({
-        name: user?.name || '',
-        email: user?.email || ''
-    });
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onUpdateUser({ ...user, ...formData });
-        onClose();
-    };
-
-    return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                    <h2>👤 Chỉnh sửa thông tin</h2>
-                    <button className="modal-close" onClick={onClose}>×</button>
-                </div>
-                
-                <form onSubmit={handleSubmit} className="modal-body">
-                    <div className="form-group">
-                        <label>Tên</label>
-                        <input
-                            type="text"
-                            value={formData.name}
-                            onChange={(e) => setFormData({...formData, name: e.target.value})}
-                            required
-                        />
-                    </div>
-                    
-                    <div className="form-group">
-                        <label>Email</label>
-                        <input
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) => setFormData({...formData, email: e.target.value})}
-                            required
-                        />
-                    </div>
-                    
-                    <div className="modal-actions">
-                        <button type="submit" className="submit-btn">
-                            💾 Lưu thay đổi
-                        </button>
-                        <button type="button" className="cancel-btn" onClick={onClose}>
-                            Hủy
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
-};
 
 export default App;

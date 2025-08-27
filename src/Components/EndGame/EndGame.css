@@ -12,16 +12,16 @@
 }
 
 .end-game-container {
+    background-color: #800080;
+    color: white;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    text-align: center;
-    color: white;
-    background-color: #800080;
-    min-height: 100vh;
-    padding: 20px;
+    justify-content: center;
+    font-family: sans-serif;
     box-sizing: border-box;
+    padding: 20px;
 }
 
 .summary-card,

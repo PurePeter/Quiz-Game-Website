@@ -16,7 +16,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
     const [maxPlayers, setMaxPlayers] = useState(4);
     const [currentRoom, setCurrentRoom] = useState(null);
     const [playerName, setPlayerName] = useState('');
-    
+
     const socketRef = useRef();
 
     // API Configuration
@@ -32,7 +32,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
             newSocket.on('connect', () => {
                 console.log('✅ Connected to Socket.IO server');
                 setConnected(true);
-                
+
                 // Authenticate with JWT token
                 const token = localStorage.getItem('quiz_token');
                 if (token) {
@@ -52,7 +52,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                 setCurrentRoom(data);
                 alert(`✅ Phòng đã được tạo thành công! Room Code: ${data.data.roomCode}`);
                 setShowCreateRoom(false);
-                
+
                 // Navigate to game room
                 if (onEnterGameRoom) {
                     onEnterGameRoom(data.data.roomCode, selectedQuiz._id);
@@ -64,7 +64,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                 setCurrentRoom(data);
                 alert('✅ Đã tham gia phòng thành công!');
                 setShowJoinRoom(false);
-                
+
                 // Navigate to game room
                 if (onEnterGameRoom) {
                     onEnterGameRoom(data.data.roomCode, selectedQuiz._id);
@@ -85,7 +85,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
             setIsLoading(true);
             const response = await fetch(`${API_BASE}/quiz/all`);
             const data = await response.json();
-            
+
             if (data.success) {
                 setAvailableQuizzes(data.data || []);
                 console.log('📥 Available quizzes:', data.data);
@@ -120,14 +120,14 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
         try {
             setIsLoading(true);
             const token = localStorage.getItem('quiz_token');
-            
+
             const roomData = {
                 quizId: selectedQuiz._id,
                 settings: {
                     maxPlayers: maxPlayers || 8,
                     autoStart: false,
-                    showLeaderboard: true
-                }
+                    showLeaderboard: true,
+                },
             };
 
             console.log('🚀 Creating room:', roomData);
@@ -136,9 +136,9 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(roomData)
+                body: JSON.stringify(roomData),
             });
 
             const data = await response.json();
@@ -150,7 +150,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                 setRoomName('');
                 setMaxPlayers(4);
                 setSelectedQuiz(null);
-                
+
                 // Navigate to game room
                 if (onEnterGameRoom) {
                     onEnterGameRoom(data.data.roomCode, selectedQuiz._id);
@@ -176,9 +176,9 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
         try {
             setIsLoading(true);
             const token = localStorage.getItem('quiz_token');
-            
+
             const joinData = {
-                roomCode: roomCode.trim()
+                roomCode: roomCode.trim(),
             };
 
             console.log('🚀 Joining room:', joinData);
@@ -187,9 +187,9 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(joinData)
+                body: JSON.stringify(joinData),
             });
 
             const data = await response.json();
@@ -199,7 +199,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                 alert('✅ Đã tham gia phòng thành công!');
                 setShowJoinRoom(false);
                 setRoomCode('');
-                
+
                 // Navigate to game room
                 if (onEnterGameRoom) {
                     onEnterGameRoom(data.data.roomCode, data.data.quizId);
@@ -244,8 +244,8 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                         ) : availableQuizzes.length > 0 ? (
                             <div className="quiz-grid">
                                 {availableQuizzes.map((quiz) => (
-                                    <div 
-                                        key={quiz._id} 
+                                    <div
+                                        key={quiz._id}
                                         className={`quiz-card ${selectedQuiz?._id === quiz._id ? 'selected' : ''}`}
                                         onClick={() => setSelectedQuiz(quiz)}
                                     >
@@ -271,19 +271,13 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                             <div className="selected-quiz">
                                 <strong>Quiz đã chọn:</strong> {selectedQuiz.title}
                             </div>
-                            
+
                             <div className="action-buttons">
-                                <button 
-                                    className="create-room-btn"
-                                    onClick={() => setShowCreateRoom(true)}
-                                >
+                                <button className="create-room-btn" onClick={() => setShowCreateRoom(true)}>
                                     🏠 Tạo Phòng Mới
                                 </button>
-                                
-                                <button 
-                                    className="join-room-btn"
-                                    onClick={() => setShowJoinRoom(true)}
-                                >
+
+                                <button className="join-room-btn" onClick={() => setShowJoinRoom(true)}>
                                     🚪 Tham Gia Phòng
                                 </button>
                             </div>
@@ -296,9 +290,11 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                                 <div className="modal-header">
                                     <h2>🏠 Tạo Phòng Mới</h2>
-                                    <button className="modal-close" onClick={() => setShowCreateRoom(false)}>×</button>
+                                    <button className="modal-close" onClick={() => setShowCreateRoom(false)}>
+                                        ×
+                                    </button>
                                 </div>
-                                
+
                                 <div className="modal-body">
                                     <div className="form-group">
                                         <label>Tên phòng *</label>
@@ -310,10 +306,13 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                                             required
                                         />
                                     </div>
-                                    
+
                                     <div className="form-group">
                                         <label>Số người chơi tối đa</label>
-                                        <select value={maxPlayers} onChange={(e) => setMaxPlayers(Number(e.target.value))}>
+                                        <select
+                                            value={maxPlayers}
+                                            onChange={(e) => setMaxPlayers(Number(e.target.value))}
+                                        >
                                             <option value={2}>2 người</option>
                                             <option value={4}>4 người</option>
                                             <option value={6}>6 người</option>
@@ -321,18 +320,12 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                                         </select>
                                     </div>
                                 </div>
-                                
+
                                 <div className="modal-actions">
-                                    <button 
-                                        className="submit-btn"
-                                        onClick={handleCreateRoom}
-                                        disabled={isLoading}
-                                    >
+                                    <button className="submit-btn" onClick={handleCreateRoom} disabled={isLoading}>
                                         {isLoading ? 'Đang tạo...' : '🏠 Tạo Phòng'}
                                     </button>
-                                    <button 
-                                        className="cancel-btn"
-                                        onClick={() => setShowCreateRoom(false)}>
+                                    <button className="cancel-btn" onClick={() => setShowCreateRoom(false)}>
                                         Hủy
                                     </button>
                                 </div>
@@ -346,9 +339,11 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                                 <div className="modal-header">
                                     <h2>🚪 Tham Gia Phòng</h2>
-                                    <button className="modal-close" onClick={() => setShowJoinRoom(false)}>×</button>
+                                    <button className="modal-close" onClick={() => setShowJoinRoom(false)}>
+                                        ×
+                                    </button>
                                 </div>
-                                
+
                                 <div className="modal-body">
                                     <div className="form-group">
                                         <label>Room Code *</label>
@@ -364,18 +359,12 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                                         <small>Nhập 6 ký tự room code để tham gia phòng</small>
                                     </div>
                                 </div>
-                                
+
                                 <div className="modal-actions">
-                                    <button 
-                                        className="submit-btn"
-                                        onClick={handleJoinRoom}
-                                        disabled={isLoading}
-                                    >
+                                    <button className="submit-btn" onClick={handleJoinRoom} disabled={isLoading}>
                                         {isLoading ? 'Đang tham gia...' : '🚪 Tham Gia Phòng'}
                                     </button>
-                                    <button 
-                                        className="cancel-btn"
-                                        onClick={() => setShowJoinRoom(false)}>
+                                    <button className="cancel-btn" onClick={() => setShowJoinRoom(false)}>
                                         Hủy
                                     </button>
                                 </div>

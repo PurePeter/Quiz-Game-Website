@@ -18,7 +18,7 @@ const GameRoom = ({ roomCode, quizId, user, onBackToLobby }) => {
     const [totalQuestions, setTotalQuestions] = useState(0);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [roomId, setRoomId] = useState('');
-    
+
     const socketRef = useRef();
     const timerRef = useRef();
 
@@ -32,7 +32,7 @@ const GameRoom = ({ roomCode, quizId, user, onBackToLobby }) => {
             console.log('✅ Connected to Socket.IO server');
             setConnected(true);
             addGameLog('✅ Kết nối thành công với server', 'success');
-            
+
             // Authenticate with JWT token
             const token = localStorage.getItem('quiz_token');
             if (token) {
@@ -52,7 +52,7 @@ const GameRoom = ({ roomCode, quizId, user, onBackToLobby }) => {
             console.log('✅ Authenticated successfully:', data);
             setAuthenticated(true);
             addGameLog('✅ Xác thực thành công', 'success');
-            
+
             // Join room after authentication
             newSocket.emit('join_room', { roomCode });
         });
@@ -66,9 +66,16 @@ const GameRoom = ({ roomCode, quizId, user, onBackToLobby }) => {
         newSocket.on('room_joined', (res) => {
             setRoomId(res.data?.roomId || '');
             const incoming = Array.isArray(res.data?.players) ? res.data.players : [];
-            const normalized = incoming.length > 0 
-                ? incoming 
-                : [{ id: user?._id || 'me', name: `Player ${(user?._id || 'me').substring(0,8)}...`, isHost: !!res.data?.isHost }];
+            const normalized =
+                incoming.length > 0
+                    ? incoming
+                    : [
+                          {
+                              id: user?._id || 'me',
+                              name: `Player ${(user?._id || 'me').substring(0, 8)}...`,
+                              isHost: !!res.data?.isHost,
+                          },
+                      ];
             setPlayers(normalized);
             setIsHost(res.data?.isHost || false);
             setGameState(res.data?.status || 'waiting');
@@ -102,13 +109,13 @@ const GameRoom = ({ roomCode, quizId, user, onBackToLobby }) => {
                 totalQuestions: data.totalQuestions,
                 question: data.question,
                 timeLimit: data.timeLimit,
-                startTime: data.startTime
+                startTime: data.startTime,
             });
             setSelectedAnswer(null);
             setQuestionTimer(data.timeLimit || 25);
             setCurrentQuestionIndex(data.questionIndex);
             addGameLog(`❓ Câu hỏi ${data.questionIndex + 1}/${data.totalQuestions}`, 'info');
-            
+
             // Start countdown timer
             startQuestionTimer(data.timeLimit || 25);
         });
@@ -125,16 +132,16 @@ const GameRoom = ({ roomCode, quizId, user, onBackToLobby }) => {
         newSocket.on('question_results', (data) => {
             console.log('📊 Question results:', data);
             setLeaderboard(data.leaderboard || []);
-            
+
             // Update player score
-            const playerResult = data.playerResults?.find(p => p.userId === user._id);
+            const playerResult = data.playerResults?.find((p) => p.userId === user._id);
             if (playerResult) {
-                setPlayerScore(prev => prev + playerResult.points);
+                setPlayerScore((prev) => prev + playerResult.points);
                 addGameLog(`🎯 Điểm câu này: +${playerResult.points}`, 'success');
             }
-            
+
             addGameLog('📊 Kết quả câu hỏi', 'info');
-            
+
             // Clear timer
             if (timerRef.current) {
                 clearInterval(timerRef.current);
@@ -173,13 +180,13 @@ const GameRoom = ({ roomCode, quizId, user, onBackToLobby }) => {
     // Helper functions
     const addGameLog = (message, type = 'info') => {
         const timestamp = new Date().toLocaleTimeString();
-        setGameLogs(prev => [...prev, { timestamp, message, type }]);
+        setGameLogs((prev) => [...prev, { timestamp, message, type }]);
     };
 
     const startQuestionTimer = (duration) => {
         setQuestionTimer(duration);
         timerRef.current = setInterval(() => {
-            setQuestionTimer(prev => {
+            setQuestionTimer((prev) => {
                 if (prev <= 1) {
                     clearInterval(timerRef.current);
                     return 0;
@@ -200,13 +207,13 @@ const GameRoom = ({ roomCode, quizId, user, onBackToLobby }) => {
     const handleSubmitAnswer = (answerIndex) => {
         if (socket && currentQuestion && selectedAnswer === null) {
             const responseTime = (currentQuestion.timeLimit || 25) - questionTimer;
-            
+
             // ✅ Match với backend data structure
             socket.emit('submit_answer', {
                 roomId,
                 questionIndex: currentQuestion.questionIndex,
                 selectedAnswer: answerIndex,
-                responseTime: responseTime * 1000 // Convert to milliseconds
+                responseTime: responseTime * 1000, // Convert to milliseconds
             });
             setSelectedAnswer(answerIndex);
         }
@@ -224,11 +231,17 @@ const GameRoom = ({ roomCode, quizId, user, onBackToLobby }) => {
         <div className="waiting-room">
             <h2>⏳ Đang chờ người chơi...</h2>
             <div className="room-info">
-                <p><strong>Room Code:</strong> <span className="room-code">{roomCode}</span></p>
-                <p><strong>Quiz:</strong> {currentQuestion?.quizTitle || 'Loading...'}</p>
-                <p><strong>Players:</strong> {players.length}</p>
+                <p>
+                    <strong>Room Code:</strong> <span className="room-code">{roomCode}</span>
+                </p>
+                <p>
+                    <strong>Quiz:</strong> {currentQuestion?.quizTitle || 'Loading...'}
+                </p>
+                <p>
+                    <strong>Players:</strong> {players.length}
+                </p>
             </div>
-            
+
             <div className="players-list">
                 <h3>👥 Người chơi trong phòng:</h3>
                 {players.map((player, index) => (
@@ -240,7 +253,7 @@ const GameRoom = ({ roomCode, quizId, user, onBackToLobby }) => {
             </div>
 
             {isHost && (
-                <button 
+                <button
                     className="start-game-btn"
                     onClick={handleStartGame}
                     // ✅ Sửa: Bỏ disabled condition
@@ -253,39 +266,59 @@ const GameRoom = ({ roomCode, quizId, user, onBackToLobby }) => {
     );
 
     const renderGameQuestion = () => (
-        <div className="game-question">
-            <div className="question-header">
-                <h2>❓ Câu hỏi {currentQuestionIndex + 1}/{totalQuestions}</h2>
-                <div className="timer">⏱️ {questionTimer}s</div>
+        <div className="quiz-container">
+            <div className="header-quiz">
+                <div className="header-info">
+                    <div>
+                        Câu hỏi {currentQuestionIndex + 1}/{totalQuestions}
+                    </div>
+                    <div>Điểm: {playerScore}</div>
+                </div>
+                <div className="progress-bar">
+                    <div
+                        className="progress-bar-fill"
+                        style={{ width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%` }}
+                    ></div>
+                </div>
             </div>
-
-            <div className="question-content">
-                <p className="question-text">{currentQuestion?.question?.text}</p>
-                
-                {currentQuestion?.question?.imageUrl && (
-                    <img 
-                        src={currentQuestion.question.imageUrl} 
-                        alt="Question" 
-                        className="question-image"
-                    />
-                )}
+            <div className="question-section">
+                <div className="question-text">{currentQuestion?.question?.text}</div>
             </div>
-
-            <div className="answer-options">
-                {currentQuestion?.question?.options?.map((option, index) => (
-                    <button
-                        key={index}
-                        className={`answer-option ${
-                            selectedAnswer === index ? 'selected' : ''
-                        }`}
-                        onClick={() => handleSubmitAnswer(index)}
-                        disabled={selectedAnswer !== null || isHost}
-                    >
-                        {String.fromCharCode(65 + index)}. {option}
-                    </button>
-                ))}
+            <div className="timer-bar-wrapper">
+                <div className="timer-bar-bg">
+                    <div
+                        className="timer-bar-fill"
+                        style={{
+                            width: `${(questionTimer / (currentQuestion?.timeLimit || 25)) * 100}%`,
+                            transition: 'width 1s linear',
+                        }}
+                    ></div>
+                    <span className="timer-bar-text">{questionTimer}s</span>
+                </div>
             </div>
-
+            {currentQuestion?.question?.imageUrl && (
+                <img src={currentQuestion.question.imageUrl} alt="Question" className="question-image" />
+            )}
+            <div className="answer-section">
+                {currentQuestion?.question?.options?.map((option, index) => {
+                    let className = 'answer-button';
+                    if (selectedAnswer === index) {
+                        className += ' selected';
+                    }
+                    return (
+                        <button
+                            key={index}
+                            className={className}
+                            onClick={() => handleSubmitAnswer(index)}
+                            disabled={selectedAnswer !== null || isHost}
+                        >
+                            <span>
+                                {String.fromCharCode(65 + index)}. {option}
+                            </span>
+                        </button>
+                    );
+                })}
+            </div>
             {selectedAnswer !== null && (
                 <div className="answer-status">
                     <p>⏳ Đang chờ kết quả...</p>
@@ -308,19 +341,36 @@ const GameRoom = ({ roomCode, quizId, user, onBackToLobby }) => {
     );
 
     const renderGameFinished = () => (
-        <div className="game-finished">
-            <h2>🏁 Trò chơi kết thúc!</h2>
-            
-            <div className="final-score">
+        <div className="quiz-container">
+            <div className="summary-card">
+                <h2>🏁 Trò chơi kết thúc!</h2>
                 <h3>🎯 Điểm của bạn: {playerScore}</h3>
                 <p>Tổng câu hỏi: {totalQuestions}</p>
                 <p>Trung bình: {(playerScore / totalQuestions).toFixed(1)} điểm/câu</p>
             </div>
-            
-            <div className="final-results">
-                {renderLeaderboard()}
+            <div className="leaderboard-container">
+                <h2>Bảng Xếp Hạng</h2>
+                <div className="leaderboard-scroll-area">
+                    <table className="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Hạng</th>
+                                <th>Tên</th>
+                                <th>Điểm</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {leaderboard.map((player, index) => (
+                                <tr key={index} className={index < 5 ? 'top-rank' : ''}>
+                                    <td className="rank">{index + 1}</td>
+                                    <td>{player.name || `Player ${player.userId?.substring(0, 8)}...`}</td>
+                                    <td>{player.totalScore}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            
             <div className="final-actions">
                 <button className="play-again-btn" onClick={() => window.location.reload()}>
                     🔄 Chơi lại

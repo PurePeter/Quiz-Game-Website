@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css';
 
-const Header = ({ 
-    isAuthenticated = false, 
-    user = null, 
-    onLogin, 
+const Header = ({
+    isAuthenticated = false,
+    user = null,
+    onLogin,
     onRegister,
-    onLogout, 
+    onLogout,
     onShowProfile,
     currentPage = 'quiz',
-    onPageChange
+    onPageChange,
 }) => {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -32,7 +32,7 @@ const Header = ({
     const handleLogin = async (credentials) => {
         try {
             console.log('🔑 Header: Bắt đầu đăng nhập...');
-            
+
             // Call onLogin from props (App.js will handle the API call)
             if (onLogin) {
                 const result = await onLogin(credentials);
@@ -53,7 +53,7 @@ const Header = ({
     const handleRegister = async (userData) => {
         try {
             console.log('🚀 Header: Bắt đầu đăng ký...');
-            
+
             // Call onRegister from props (App.js will handle the API call)
             if (onRegister) {
                 const result = await onRegister(userData);
@@ -96,8 +96,8 @@ const Header = ({
 
                     {/* Navigation */}
                     <nav className={`nav-menu ${showMobileMenu ? 'nav-menu-active' : ''}`}>
-                        <a 
-                            href="#" 
+                        <a
+                            href="#"
                             className={`nav-link ${currentPage === 'quiz' ? 'active' : ''}`}
                             onClick={(e) => {
                                 e.preventDefault();
@@ -107,8 +107,8 @@ const Header = ({
                             <i className="icon-quiz"></i>
                             Quiz
                         </a>
-                        <a 
-                            href="#" 
+                        <a
+                            href="#"
                             className={`nav-link ${currentPage === 'create' ? 'active' : ''}`}
                             onClick={(e) => {
                                 e.preventDefault();
@@ -118,8 +118,8 @@ const Header = ({
                             <i className="icon-create"></i>
                             Tạo Quiz
                         </a>
-                        <a 
-                            href="#" 
+                        <a
+                            href="#"
                             className={`nav-link ${currentPage === 'leaderboard' ? 'active' : ''}`}
                             onClick={(e) => {
                                 e.preventDefault();
@@ -129,8 +129,8 @@ const Header = ({
                             <i className="icon-trophy"></i>
                             Bảng xếp hạng
                         </a>
-                        <a 
-                            href="#" 
+                        <a
+                            href="#"
                             className={`nav-link ${currentPage === 'history' ? 'active' : ''}`}
                             onClick={(e) => {
                                 e.preventDefault();
@@ -146,15 +146,12 @@ const Header = ({
                     <div className="header-user">
                         {isAuthenticated && user ? (
                             <div className="user-menu">
-                                <button 
-                                    className="user-button"
-                                    onClick={() => setShowUserDropdown(!showUserDropdown)}
-                                >
+                                <button className="user-button" onClick={() => setShowUserDropdown(!showUserDropdown)}>
                                     <img src={user.avatar} alt={user.name} className="user-avatar" />
                                     <span className="user-name">{user.name}</span>
                                     <i className={`dropdown-arrow ${showUserDropdown ? 'rotate' : ''}`}>▼</i>
                                 </button>
-                                
+
                                 {showUserDropdown && (
                                     <div className="user-dropdown">
                                         <div className="dropdown-header">
@@ -165,11 +162,23 @@ const Header = ({
                                             </div>
                                         </div>
                                         <hr className="dropdown-divider" />
-                                        <button className="dropdown-item" onClick={onShowProfile}>
+                                        <button
+                                            className="dropdown-item"
+                                            onClick={() => {
+                                                onPageChange('edit-profile');
+                                                setShowUserDropdown(false);
+                                            }}
+                                        >
                                             <i className="icon-user"></i>
-                                            Hồ sơ cá nhân
+                                            Hồ sơ của bạn
                                         </button>
-                                        <button className="dropdown-item">
+                                        <button
+                                            className="dropdown-item"
+                                            onClick={() => {
+                                                onPageChange('settings');
+                                                setShowUserDropdown(false);
+                                            }}
+                                        >
                                             <i className="icon-settings"></i>
                                             Cài đặt
                                         </button>
@@ -183,16 +192,10 @@ const Header = ({
                             </div>
                         ) : (
                             <div className="auth-buttons">
-                                <button 
-                                    className="login-btn"
-                                    onClick={() => setShowLoginModal(true)}
-                                >
+                                <button className="login-btn" onClick={() => setShowLoginModal(true)}>
                                     Đăng nhập
                                 </button>
-                                <button 
-                                    className="signup-btn"
-                                    onClick={() => setShowRegisterModal(true)}
-                                >
+                                <button className="signup-btn" onClick={() => setShowRegisterModal(true)}>
                                     Đăng ký
                                 </button>
                             </div>
@@ -200,10 +203,7 @@ const Header = ({
                     </div>
 
                     {/* Mobile Menu Toggle */}
-                    <button 
-                        className="mobile-toggle"
-                        onClick={() => setShowMobileMenu(!showMobileMenu)}
-                    >
+                    <button className="mobile-toggle" onClick={() => setShowMobileMenu(!showMobileMenu)}>
                         <span></span>
                         <span></span>
                         <span></span>
@@ -213,7 +213,7 @@ const Header = ({
 
             {/* Login Modal */}
             {showLoginModal && (
-                <LoginModal 
+                <LoginModal
                     onLogin={handleLogin}
                     onClose={() => setShowLoginModal(false)}
                     onSwitchToRegister={() => {
@@ -225,7 +225,7 @@ const Header = ({
 
             {/* Register Modal */}
             {showRegisterModal && (
-                <RegisterModal 
+                <RegisterModal
                     onRegister={handleRegister}
                     onClose={() => setShowRegisterModal(false)}
                     onSwitchToLogin={() => {
@@ -242,7 +242,7 @@ const Header = ({
 const LoginModal = ({ onLogin, onClose, onSwitchToRegister }) => {
     const [formData, setFormData] = useState({
         email: '',
-        password: ''
+        password: '',
     });
 
     const handleSubmit = (e) => {
@@ -253,7 +253,7 @@ const LoginModal = ({ onLogin, onClose, onSwitchToRegister }) => {
     const handleChange = (e) => {
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
         });
     };
 
@@ -262,9 +262,11 @@ const LoginModal = ({ onLogin, onClose, onSwitchToRegister }) => {
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h2>Đăng nhập</h2>
-                    <button className="modal-close" onClick={onClose}>×</button>
+                    <button className="modal-close" onClick={onClose}>
+                        ×
+                    </button>
                 </div>
-                
+
                 <form onSubmit={handleSubmit} className="login-form">
                     <div className="form-group">
                         <label htmlFor="email">Email</label>
@@ -278,7 +280,7 @@ const LoginModal = ({ onLogin, onClose, onSwitchToRegister }) => {
                             placeholder="Nhập địa chỉ email"
                         />
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="password">Mật khẩu</label>
                         <input
@@ -291,7 +293,7 @@ const LoginModal = ({ onLogin, onClose, onSwitchToRegister }) => {
                             placeholder="Nhập mật khẩu"
                         />
                     </div>
-                    
+
                     <div className="form-actions">
                         <button type="submit" className="submit-btn">
                             Đăng nhập
@@ -300,16 +302,14 @@ const LoginModal = ({ onLogin, onClose, onSwitchToRegister }) => {
                             Hủy
                         </button>
                     </div>
-                    
+
                     <div className="form-footer">
-                        <a href="#" className="forgot-password">Quên mật khẩu?</a>
+                        <a href="#" className="forgot-password">
+                            Quên mật khẩu?
+                        </a>
                         <p>
-                            Chưa có tài khoản? 
-                            <button 
-                                type="button" 
-                                className="switch-modal-btn"
-                                onClick={onSwitchToRegister}
-                            >
+                            Chưa có tài khoản?
+                            <button type="button" className="switch-modal-btn" onClick={onSwitchToRegister}>
                                 Đăng ký ngay
                             </button>
                         </p>
@@ -326,7 +326,7 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
         name: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
     });
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
@@ -364,13 +364,13 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }
 
         setIsLoading(true);
-        
+
         try {
             onRegister(formData);
         } catch (error) {
@@ -384,14 +384,14 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: value
+            [name]: value,
         });
-        
+
         // Clear error when user starts typing
         if (errors[name]) {
             setErrors({
                 ...errors,
-                [name]: ''
+                [name]: '',
             });
         }
     };
@@ -401,9 +401,11 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
             <div className="modal-content register-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h2>Đăng ký tài khoản</h2>
-                    <button className="modal-close" onClick={onClose}>×</button>
+                    <button className="modal-close" onClick={onClose}>
+                        ×
+                    </button>
                 </div>
-                
+
                 <form onSubmit={handleSubmit} className="login-form">
                     <div className="form-group">
                         <label htmlFor="register-name">Tên hiển thị *</label>
@@ -434,7 +436,7 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
                         />
                         {errors.email && <span className="error-message">{errors.email}</span>}
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="register-password">Mật khẩu *</label>
                         <input
@@ -464,28 +466,20 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
                         />
                         {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
                     </div>
-                    
+
                     <div className="form-actions">
-                        <button 
-                            type="submit" 
-                            className="submit-btn"
-                            disabled={isLoading}
-                        >
+                        <button type="submit" className="submit-btn" disabled={isLoading}>
                             {isLoading ? 'Đang đăng ký...' : 'Đăng ký'}
                         </button>
                         <button type="button" className="cancel-btn" onClick={onClose}>
                             Hủy
                         </button>
                     </div>
-                    
+
                     <div className="form-footer">
                         <p>
-                            Đã có tài khoản? 
-                            <button 
-                                type="button" 
-                                className="switch-modal-btn"
-                                onClick={onSwitchToLogin}
-                            >
+                            Đã có tài khoản?
+                            <button type="button" className="switch-modal-btn" onClick={onSwitchToLogin}>
                                 Đăng nhập ngay
                             </button>
                         </p>

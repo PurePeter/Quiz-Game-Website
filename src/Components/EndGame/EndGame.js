@@ -27,7 +27,7 @@ const EndGame = ({ score, totalQuestions, onRestart, playerName, showLeaderboard
         if (!showLeaderboardOnly && playerName) {
             const currentPlayer = { name: playerName, score: score, isCurrentUser: true };
             fullLeaderboard = [...otherPlayers, currentPlayer].sort((a, b) => b.score - a.score);
-            
+
             // Find player rank
             const rank = fullLeaderboard.findIndex((p) => p.isCurrentUser) + 1;
             setPlayerRank(rank);
@@ -88,7 +88,6 @@ const EndGame = ({ score, totalQuestions, onRestart, playerName, showLeaderboard
                 <h2>Chúc mừng bạn đã hoàn thành {totalQuestions} câu!</h2>
                 <h3>Điểm của bạn: {score} điểm</h3>
             </div>
-
             <div className="leaderboard-container">
                 <h2>Bảng Xếp Hạng</h2>
                 <div className="leaderboard-scroll-area">
@@ -136,7 +135,6 @@ const EndGame = ({ score, totalQuestions, onRestart, playerName, showLeaderboard
                     </div>
                 )}
             </div>
-
             <button className="restart-button" onClick={onRestart}>
                 Chơi lại
             </button>

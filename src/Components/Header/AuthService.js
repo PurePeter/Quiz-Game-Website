@@ -8,7 +8,7 @@ class AuthService {
     async login(credentials) {
         try {
             // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
 
             // Mock validation
             if (!credentials.username || !credentials.password) {
@@ -26,19 +26,19 @@ class AuthService {
                 stats: {
                     totalQuizzes: 0,
                     bestScore: 0,
-                    averageScore: 0
-                }
+                    averageScore: 0,
+                },
             };
 
             return {
                 success: true,
                 user: mockUser,
-                token: 'mock-jwt-token-' + Date.now()
+                token: 'mock-jwt-token-' + Date.now(),
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -46,7 +46,7 @@ class AuthService {
     // Mock register - replace with real API call
     async register(userData) {
         try {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
 
             if (!userData.username || !userData.email || !userData.password) {
                 throw new Error('All fields are required');
@@ -61,19 +61,19 @@ class AuthService {
                 stats: {
                     totalQuizzes: 0,
                     bestScore: 0,
-                    averageScore: 0
-                }
+                    averageScore: 0,
+                },
             };
 
             return {
                 success: true,
                 user: mockUser,
-                token: 'mock-jwt-token-' + Date.now()
+                token: 'mock-jwt-token-' + Date.now(),
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -81,16 +81,16 @@ class AuthService {
     // Mock password reset
     async resetPassword(email) {
         try {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
             return {
                 success: true,
-                message: 'Password reset link sent to your email'
+                message: 'Password reset link sent to your email',
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -98,19 +98,19 @@ class AuthService {
     // Update user profile
     async updateProfile(userId, profileData) {
         try {
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise((resolve) => setTimeout(resolve, 500));
 
             return {
                 success: true,
                 user: {
                     ...profileData,
-                    avatar: `https://ui-avatars.com/api/?name=${profileData.name}&background=4f46e5&color=fff`
-                }
+                    avatar: `https://ui-avatars.com/api/?name=${profileData.name}&background=4f46e5&color=fff`,
+                },
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -118,7 +118,7 @@ class AuthService {
     // Get user stats
     async getUserStats(userId) {
         try {
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise((resolve) => setTimeout(resolve, 500));
 
             const mockStats = {
                 totalQuizzes: Math.floor(Math.random() * 50) + 1,
@@ -127,18 +127,18 @@ class AuthService {
                 recentQuizzes: [
                     { id: 1, score: 85, date: '2024-01-15', topic: 'JavaScript' },
                     { id: 2, score: 92, date: '2024-01-14', topic: 'React' },
-                    { id: 3, score: 78, date: '2024-01-13', topic: 'CSS' }
-                ]
+                    { id: 3, score: 78, date: '2024-01-13', topic: 'CSS' },
+                ],
             };
 
             return {
                 success: true,
-                stats: mockStats
+                stats: mockStats,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -161,4 +161,4 @@ class AuthService {
     }
 }
 
-export default new AuthService(); 
+export default new AuthService();

@@ -69,3 +69,12 @@ h2 {
   color: #667eea;
   margin-top: 2rem;
 }
+
+/* Dark Mode Background Override */
+body.dark-mode {
+  background: #121212;
+}
+
+body.dark-mode .App {
+  background-color: #121212;
+}
