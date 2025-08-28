@@ -120,7 +120,7 @@ const GameRoom = ({ roomCode, quizId, user, playerName, onBackToLobby }) => {
         // Game events - Match với backend GameManager
         newSocket.on('countdown_started', (data) => {
             console.log('⏳ Countdown started received from server:', data);
-            setGameState('countdown'); // Thêm state mới này
+            setGameState('countdown');
             setCountdown(3);
             addGameLog('⏳ Trò chơi sắp bắt đầu...', 'info');
         });

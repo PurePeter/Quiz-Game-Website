@@ -162,7 +162,8 @@
 
 .room-actions h2 {
     color: #1e40af;
-    margin-bottom: 1rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
 }
 
 .selected-quiz {
