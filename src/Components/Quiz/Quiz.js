@@ -119,7 +119,7 @@ const Quiz = ({ questionData, currentQuestionIndex, totalQuestions, score, onAns
             )}
             <div className="answer-section">
                 {questionData.answerOptions.map((answerOption, index) => {
-                    let className = 'answer-button';
+                    let className = `answer-button answer-color-${index}`;
                     if (isAnswerRevealed) {
                         if (answerOption.isCorrect) {
                             className += ' correct';

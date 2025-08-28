@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import './Lobby.css';
 
-const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
+const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz }) => {
     const [socket, setSocket] = useState(null);
     const [connected, setConnected] = useState(false);
     const [authenticated, setAuthenticated] = useState(false);
@@ -55,7 +55,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
 
                 // Navigate to game room
                 if (onEnterGameRoom) {
-                    onEnterGameRoom(data.data.roomCode, selectedQuiz._id);
+                    onEnterGameRoom(data.data.roomCode, selectedQuiz._id, playerName);
                 }
             });
 
@@ -67,7 +67,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
 
                 // Navigate to game room
                 if (onEnterGameRoom) {
-                    onEnterGameRoom(data.data.roomCode, selectedQuiz._id);
+                    onEnterGameRoom(data.data.roomCode, selectedQuiz._id, playerName);
                 }
             });
 
@@ -116,6 +116,10 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
             alert('Vui lòng nhập tên phòng!');
             return;
         }
+        if (!playerName.trim()) {
+            alert('Vui lòng nhập tên của bạn!');
+            return;
+        }
 
         try {
             setIsLoading(true);
@@ -123,6 +127,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
 
             const roomData = {
                 quizId: selectedQuiz._id,
+                playerName: playerName.trim(), // Pass player name
                 settings: {
                     maxPlayers: maxPlayers || 8,
                     autoStart: false,
@@ -150,10 +155,11 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                 setRoomName('');
                 setMaxPlayers(4);
                 setSelectedQuiz(null);
+                setPlayerName(''); // Clear player name after successful creation
 
                 // Navigate to game room
                 if (onEnterGameRoom) {
-                    onEnterGameRoom(data.data.roomCode, selectedQuiz._id);
+                    onEnterGameRoom(data.data.roomCode, selectedQuiz._id, playerName);
                 }
             } else {
                 alert(`❌ Lỗi tạo phòng: ${data.message}`);
@@ -172,6 +178,10 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
             alert('Vui lòng nhập room code!');
             return;
         }
+        if (!playerName.trim()) {
+            alert('Vui lòng nhập tên của bạn!');
+            return;
+        }
 
         try {
             setIsLoading(true);
@@ -179,6 +189,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
 
             const joinData = {
                 roomCode: roomCode.trim(),
+                playerName: playerName.trim(), // Pass player name
             };
 
             console.log('🚀 Joining room:', joinData);
@@ -199,10 +210,11 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                 alert('✅ Đã tham gia phòng thành công!');
                 setShowJoinRoom(false);
                 setRoomCode('');
+                setPlayerName(''); // Clear player name after successful join
 
                 // Navigate to game room
                 if (onEnterGameRoom) {
-                    onEnterGameRoom(data.data.roomCode, data.data.quizId);
+                    onEnterGameRoom(data.data.roomCode, data.data.quizId, playerName);
                 }
             } else {
                 alert(`❌ Lỗi tham gia phòng: ${data.message}`);
@@ -221,6 +233,40 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
             return;
         }
         onStartQuiz(playerName);
+    };
+
+    const handleEditQuiz = (quiz) => {
+        onEditQuiz(quiz._id);
+    };
+
+    const handleDeleteQuiz = async (quizId) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa quiz này không?')) {
+            try {
+                setIsLoading(true);
+                const token = localStorage.getItem('quiz_token');
+                const response = await fetch(`${API_BASE}/quiz/${quizId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Xóa quiz thành công!');
+                    loadAvailableQuizzes(); // Refresh the quiz list
+                } else {
+                    alert(`❌ Lỗi xóa quiz: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('❌ Error deleting quiz:', error);
+                alert('❌ Lỗi kết nối server');
+            } finally {
+                setIsLoading(false);
+            }
+        }
     };
 
     return (
@@ -253,6 +299,14 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                                         <p>{quiz.description}</p>
                                         <div className="quiz-meta">
                                             <span className="questions">{quiz.questions?.length || 0} câu hỏi</span>
+                                        </div>
+                                        <div className="quiz-actions">
+                                            <button className="edit-quiz-btn" onClick={(e) => { e.stopPropagation(); handleEditQuiz(quiz); }}>
+                                                Chỉnh sửa
+                                            </button>
+                                            <button className="delete-quiz-btn" onClick={(e) => { e.stopPropagation(); handleDeleteQuiz(quiz._id); }}>
+                                                Xóa
+                                            </button>
                                         </div>
                                     </div>
                                 ))}
@@ -297,7 +351,18 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
 
                                 <div className="modal-body">
                                     <div className="form-group">
-                                        <label>Tên phòng *</label>
+                                        <label>Tên của bạn</label>
+                                        <input
+                                            type="text"
+                                            value={playerName}
+                                            onChange={(e) => setPlayerName(e.target.value)}
+                                            placeholder="Nhập tên của bạn..."
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Tên phòng</label>
                                         <input
                                             type="text"
                                             value={roomName}
@@ -345,6 +410,17 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom }) => {
                                 </div>
 
                                 <div className="modal-body">
+                                    <div className="form-group">
+                                        <label>Tên của bạn</label>
+                                        <input
+                                            type="text"
+                                            value={playerName}
+                                            onChange={(e) => setPlayerName(e.target.value)}
+                                            placeholder="Nhập tên của bạn..."
+                                            required
+                                        />
+                                    </div>
+
                                     <div className="form-group">
                                         <label>Room Code *</label>
                                         <input

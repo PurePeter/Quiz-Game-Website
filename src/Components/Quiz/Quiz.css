@@ -1,5 +1,5 @@
 .quiz-container {
-    background-color: #800080;
+    background: linear-gradient(135deg, #800080 0%, #4B0082 100%);
     color: white;
     min-height: 100vh;
     display: flex;
@@ -8,6 +8,7 @@
     justify-content: center;
     font-family: sans-serif;
     box-sizing: border-box;
+    transition: background-color 0.3s ease;
 }
 
 /* Header Quiz */
@@ -133,24 +134,35 @@
     font-size: 1rem;
     color: #fff;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: all 0.3s ease;
 }
 
-.answer-button:nth-child(1) {
-    background-color: #e74c3c;
+/* Answer colors với opacity thấp hơn */
+.answer-color-0 {
+    background-color: #e74c3c !important;
+    transition: background-color 0.3s ease;
 }
 
-.answer-button:nth-child(2) {
-    background-color: #3498db;
+.answer-color-1 {
+    background-color: #3498db !important;
+    transition: background-color 0.3s ease;
 }
 
-.answer-button:nth-child(3) {
-    background-color: #e0b60d;
+.answer-color-2 {
+    background-color: #e0b60d !important;
     color: #fff;
+    transition: background-color 0.3s ease;
 }
 
-.answer-button:nth-child(4) {
-    background-color: #27ae60;
+.answer-color-3 {
+    background-color: #27ae60 !important;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover states */
+.answer-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Shape (biểu tượng hình học) */
@@ -164,14 +176,15 @@
 }
 
 /* Highlight đúng/sai */
-.answer-button.correct {
+.answer-section .answer-button.correct {
     background-color: #4caf50 !important;
-    color: white;
+    border-color: #45a049;
+    color: #fff;
 }
 
-.answer-button.wrong {
+.answer-section .answer-button.wrong {
     background-color: #f44336 !important;
-    color: white;
+    border-color: #da190b;
 }
 
 /* Trạng thái disabled sau khi chọn */
@@ -182,10 +195,8 @@
 }
 
 .answer-button.selected {
-    border-color: #007bff;
-    background-color: #df0adf;
-    color: #fff;
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    border-color: #fff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 .answer-button.wrong.selected {

@@ -73,6 +73,8 @@ function App() {
     const [showGameRoom, setShowGameRoom] = useState(false);
     const [currentRoomCode, setCurrentRoomCode] = useState('');
     const [currentQuizId, setCurrentQuizId] = useState('');
+    const [quizToEditId, setQuizToEditId] = useState(null);
+    const [currentPlayerName, setCurrentPlayerName] = useState('');
 
     useEffect(() => {
         setQuestions(mockQuestions);
@@ -200,11 +202,22 @@ function App() {
     };
 
     // GameRoom handlers
-    const handleEnterGameRoom = (roomCode, quizId) => {
-        console.log(' Entering game room:', { roomCode, quizId });
+    const handleEnterGameRoom = (roomCode, quizId, playerName) => {
+        console.log(' Entering game room:', { roomCode, quizId, playerName });
         setCurrentRoomCode(roomCode);
         setCurrentQuizId(quizId);
+        setCurrentPlayerName(playerName || '');
         setShowGameRoom(true);
+    };
+
+    const handleStartEditQuiz = (quizId) => {
+        setQuizToEditId(quizId);
+        setCurrentPage('create');
+    };
+
+    const handleFinishEditing = () => {
+        setQuizToEditId(null);
+        setCurrentPage('lobby');
     };
 
     const handleBackToLobby = () => {
@@ -212,6 +225,7 @@ function App() {
         setShowGameRoom(false);
         setCurrentRoomCode('');
         setCurrentQuizId('');
+        setCurrentPlayerName('');
     };
 
     // Quiz handlers
@@ -286,6 +300,7 @@ function App() {
                     roomCode={currentRoomCode}
                     quizId={currentQuizId}
                     user={user}
+                    playerName={currentPlayerName}
                     onBackToLobby={handleBackToLobby}
                 />
             );
@@ -327,7 +342,7 @@ function App() {
 
         switch (currentPage) {
             case 'create':
-                return <CreateQuiz isAuthenticated={isAuthenticated} user={user} />;
+                return <CreateQuiz isAuthenticated={isAuthenticated} user={user} quizId={quizToEditId} onFinishEditing={handleFinishEditing} />;
             case 'history':
                 return <History isAuthenticated={isAuthenticated} user={user} />;
             case 'leaderboard':
@@ -360,6 +375,7 @@ function App() {
                         isAuthenticated={isAuthenticated}
                         user={user}
                         onEnterGameRoom={handleEnterGameRoom}
+                        onEditQuiz={handleStartEditQuiz}
                     />
                 );
         }

@@ -53,17 +53,6 @@ const Settings = () => {
             <div className="settings-section">
                 <h2>Tài khoản</h2>
                 <div className="setting-item">
-                    <label>Chế độ ban đêm</label>
-                    <label className="switch">
-                        <input
-                            type="checkbox"
-                            checked={isNightMode}
-                            onChange={(e) => setIsNightMode(e.target.checked)}
-                        />
-                        <span className="slider round"></span>
-                    </label>
-                </div>
-                <div className="setting-item">
                     <label>Thông báo qua email</label>
                     <label className="switch">
                         <input
@@ -77,6 +66,17 @@ const Settings = () => {
             </div>
             <div className="settings-section">
                 <h2>Giao diện</h2>
+                <div className="setting-item">
+                    <label>Chế độ ban đêm</label>
+                    <label className="switch">
+                        <input
+                            type="checkbox"
+                            checked={isNightMode}
+                            onChange={(e) => setIsNightMode(e.target.checked)}
+                        />
+                        <span className="slider round"></span>
+                    </label>
+                </div>
                 <div className="setting-item">
                     <label>Ngôn ngữ</label>
                     <select value={language} onChange={(e) => setLanguage(e.target.value)}>
