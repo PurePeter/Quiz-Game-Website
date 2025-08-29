@@ -1,19 +1,32 @@
+/* Apply lobby grid look */
+body, html { background: #0d0d0d; color: #fff; }
 .history-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
     min-height: calc(100vh - 80px);
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    position: relative;
 }
+.history-container::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: linear-gradient(var(--grid-color, #222) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--grid-color, #222) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
+    pointer-events: none;
+}
+.history-container > * { position: relative; z-index: 1; }
 
 .history-header {
     text-align: center;
     margin-bottom: 3rem;
-    padding: 3rem 2rem;
-    background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
-    border-radius: 20px;
-    color: white;
-    box-shadow: 0 20px 60px rgba(30, 58, 138, 0.3);
+    padding: 1rem 1.5rem;
+    border: 2px solid #000;
+    border-radius: 10px;
+    color: #000;
+    background: rgba(255,255,255,0.85);
 }
 
 .history-header h1 {
@@ -33,6 +46,7 @@
     padding: 2rem;
     border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border: 2px solid #000;
 }
 
 .history-items {
@@ -45,7 +59,7 @@
     background: #f8fafc;
     border-radius: 12px;
     padding: 1.5rem;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #000;
     transition: all 0.3s ease;
 }
 
@@ -86,7 +100,7 @@
     padding: 0.5rem;
     background: white;
     border-radius: 6px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #000;
 }
 
 .detail-item span:first-child {

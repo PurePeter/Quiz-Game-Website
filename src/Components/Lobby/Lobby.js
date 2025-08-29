@@ -79,6 +79,25 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
         }
     }, [isAuthenticated, selectedQuiz, onEnterGameRoom]);
 
+    // Animated grid background color following mouse position
+    useEffect(() => {
+        const handleMouseMove = (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            const r = Math.floor(100 + 155 * x);
+            const g = Math.floor(100 + 155 * y);
+            const b = Math.floor(200 + 55 * (1 - x));
+
+            const root = document.querySelector('.lobby-container');
+            if (root) {
+                root.style.setProperty('--grid-color', `rgb(${r},${g},${b})`);
+            }
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
+
     // Load available quizzes from backend
     const loadAvailableQuizzes = async () => {
         try {
@@ -273,7 +292,18 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
         <div className="lobby-container">
             <h1 className="lobby-title">🎮 Quiz Game Lobby</h1>
             <p className="lobby-description">Chọn quiz và tạo phòng để chơi cùng bạn bè!</p>
-
+            <div className="media-card">
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="bg-video"
+                    onError={(e) => { try { e.currentTarget.style.display = 'none'; } catch(_){} }}
+                >
+                    <source src="/videos/98615-649311005_small.mp4" type="video/mp4" />
+                </video>
+            </div>
             {!isAuthenticated ? (
                 <div className="auth-required">
                     <div className="auth-icon">🔐</div>

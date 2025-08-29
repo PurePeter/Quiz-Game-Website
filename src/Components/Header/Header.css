@@ -1,11 +1,11 @@
 /* Header Styles */
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   background: #ffffff;
-  border-bottom: 1px solid #eee;
+  border-bottom: 2px solid #000; /* black separator */
   z-index: 1000;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -72,6 +72,9 @@
 .mobile-toggle { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 6px; }
 .mobile-toggle span { width: 22px; height: 2px; background: #333; border-radius: 2px; }
 @media (max-width: 768px) { .mobile-toggle { display: flex; } }
+
+/* Ensure content doesn't hide behind fixed header */
+.main-content { padding-top: 72px; }
 
 /* Dropdown and avatar fixes to avoid overflow */
 .user-dropdown { position: absolute; top: calc(100% + 12px); right: 60px; background: #fff; border: 1px solid #eee; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); min-width: 260px; overflow: hidden; padding: 6px 0; }
