@@ -8,7 +8,7 @@ const Header = ({
     onRegister,
     onLogout,
     onShowProfile,
-    currentPage = 'quiz',
+    currentPage = 'none',
     onPageChange,
 }) => {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -98,46 +98,36 @@ const Header = ({
                     <nav className={`nav-menu ${showMobileMenu ? 'nav-menu-active' : ''}`}>
                         <a
                             href="#"
-                            className={`nav-link ${currentPage === 'quiz' ? 'active' : ''}`}
+                            className={`nav-link quiz ${currentPage === 'quiz' ? 'active' : ''}`}
                             onClick={(e) => {
                                 e.preventDefault();
                                 handleNavClick('quiz');
                             }}
                         >
-                            <i className="icon-quiz"></i>
+                            <span className="box"></span>
                             Quiz
                         </a>
                         <a
                             href="#"
-                            className={`nav-link ${currentPage === 'create' ? 'active' : ''}`}
+                            className={`nav-link create ${currentPage === 'create' ? 'active' : ''}`}
                             onClick={(e) => {
                                 e.preventDefault();
                                 handleNavClick('create');
                             }}
                         >
-                            <i className="icon-create"></i>
+                            <span className="box"></span>
                             Tạo Quiz
                         </a>
+                        {/* Removed Leaderboard link as requested */}
                         <a
                             href="#"
-                            className={`nav-link ${currentPage === 'leaderboard' ? 'active' : ''}`}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                handleNavClick('leaderboard');
-                            }}
-                        >
-                            <i className="icon-trophy"></i>
-                            Bảng xếp hạng
-                        </a>
-                        <a
-                            href="#"
-                            className={`nav-link ${currentPage === 'history' ? 'active' : ''}`}
+                            className={`nav-link history ${currentPage === 'history' ? 'active' : ''}`}
                             onClick={(e) => {
                                 e.preventDefault();
                                 handleNavClick('history');
                             }}
                         >
-                            <i className="icon-history"></i>
+                            <span className="box"></span>
                             Lịch sử
                         </a>
                     </nav>
@@ -357,7 +347,6 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
         } else if (formData.password !== formData.confirmPassword) {
             newErrors.confirmPassword = 'Mật khẩu xác nhận không khớp';
         }
-
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -491,3 +480,4 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
 };
 
 export default Header;
+

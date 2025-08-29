@@ -585,7 +585,7 @@ const GameRoom = ({ roomCode, quizId, user, playerName, onBackToLobby }) => {
                     </div>
                 )}
 
-                {gameState === 'playing' && renderLeaderboard()}
+                {/* Hide in-game leaderboard; only show at end game */}
 
                 <div className="game-logs">
                     <h3>📝 Game Logs</h3>
