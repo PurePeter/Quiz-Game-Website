@@ -18,6 +18,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
     const [playerName, setPlayerName] = useState('');
 
     const socketRef = useRef();
+    const roomActionsRef = useRef(null);
 
     // API Configuration
     const API_BASE = 'http://localhost:3000/api/v1';
@@ -124,6 +125,13 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
             loadAvailableQuizzes();
         }
     }, [authenticated]);
+
+    // Scroll to room actions when a quiz is selected
+    useEffect(() => {
+        if (selectedQuiz && roomActionsRef.current) {
+            roomActionsRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [selectedQuiz]);
 
     // Create room via HTTP API
     const handleCreateRoom = async () => {
@@ -299,7 +307,11 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
                     muted
                     playsInline
                     className="bg-video"
-                    onError={(e) => { try { e.currentTarget.style.display = 'none'; } catch(_){} }}
+                    onError={(e) => {
+                        try {
+                            e.currentTarget.style.display = 'none';
+                        } catch (_) {}
+                    }}
                 >
                     <source src="/videos/98615-649311005_small.mp4" type="video/mp4" />
                 </video>
@@ -331,10 +343,22 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
                                             <span className="questions">{quiz.questions?.length || 0} câu hỏi</span>
                                         </div>
                                         <div className="quiz-actions">
-                                            <button className="edit-quiz-btn" onClick={(e) => { e.stopPropagation(); handleEditQuiz(quiz); }}>
+                                            <button
+                                                className="edit-quiz-btn"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleEditQuiz(quiz);
+                                                }}
+                                            >
                                                 Chỉnh sửa
                                             </button>
-                                            <button className="delete-quiz-btn" onClick={(e) => { e.stopPropagation(); handleDeleteQuiz(quiz._id); }}>
+                                            <button
+                                                className="delete-quiz-btn"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDeleteQuiz(quiz._id);
+                                                }}
+                                            >
                                                 Xóa
                                             </button>
                                         </div>
@@ -346,11 +370,17 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
                                 <p>Chưa có quiz nào. Hãy tạo quiz trước!</p>
                             </div>
                         )}
+                        <h2>Hoặc tham gia phòng tại đây!</h2>
+                        <div className="action-buttons">
+                            <button className="join-room-btn" onClick={() => setShowJoinRoom(true)}>
+                                🚪 Tham Gia Phòng
+                            </button>
+                        </div>
                     </div>
 
                     {/* Room Actions */}
                     {selectedQuiz && (
-                        <div className="room-actions">
+                        <div className="room-actions" ref={roomActionsRef}>
                             <h2>🏠 Quản lý Phòng</h2>
                             <div className="selected-quiz">
                                 <strong>Quiz đã chọn:</strong> {selectedQuiz.title}
@@ -359,10 +389,6 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
                             <div className="action-buttons">
                                 <button className="create-room-btn" onClick={() => setShowCreateRoom(true)}>
                                     🏠 Tạo Phòng Mới
-                                </button>
-
-                                <button className="join-room-btn" onClick={() => setShowJoinRoom(true)}>
-                                    🚪 Tham Gia Phòng
                                 </button>
                             </div>
                         </div>

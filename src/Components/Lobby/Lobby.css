@@ -412,7 +412,6 @@ html {
 .quiz-selection h2 {
     color: #374151;
     margin-top: 0;
-    margin-bottom: 2rem;
     text-align: center;
 }
 
@@ -508,7 +507,7 @@ html {
     background: #f0f9ff;
     border-radius: 12px;
     padding: 2rem;
-    margin: 2rem 0;
+    margin: 5rem 0;
     text-align: center;
     border: 2px solid #000;
 }
@@ -702,7 +701,7 @@ html {
     background: #fef3c7;
     border-radius: 12px;
     padding: 2rem;
-    margin: 2rem 0;
+    margin: 5rem 0;
     border: 2px solid #000;
     color: #000;
 }
