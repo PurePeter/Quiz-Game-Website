@@ -67,7 +67,7 @@ function App() {
     const [token, setToken] = useState('');
 
     // Current page state
-    const [currentPage, setCurrentPage] = useState('lobby');
+    const [currentPage, setCurrentPage] = useState(() => localStorage.getItem('currentPage') || 'lobby');
 
     // GameRoom state
     const [showGameRoom, setShowGameRoom] = useState(false);
@@ -89,6 +89,10 @@ function App() {
             setToken(savedToken);
             setIsAuthenticated(true);
             console.log('✅ User đã đăng nhập từ localStorage:', userData);
+        }
+        const savedNightMode = localStorage.getItem('settings_nightMode');
+        if (savedNightMode === 'true') {
+            document.body.classList.add('dark-mode');
         }
     }, []);
 
@@ -273,6 +277,7 @@ function App() {
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
+        localStorage.setItem('currentPage', page);
 
         if (page !== 'quiz') {
             setCurrentQuestionIndex(0);

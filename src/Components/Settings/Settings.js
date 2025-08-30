@@ -2,29 +2,18 @@ import React, { useState, useEffect } from 'react';
 import './Settings.css';
 
 const Settings = () => {
-    // State for each setting
-    const [isNightMode, setIsNightMode] = useState(false);
-    const [emailNotifications, setEmailNotifications] = useState(true);
-    const [language, setLanguage] = useState('Tiếng Việt');
-
-    // Load settings from localStorage on component mount
-    useEffect(() => {
-        const savedNightMode = localStorage.getItem('settings_nightMode');
-        if (savedNightMode !== null) {
-            const isSavedNightModeOn = savedNightMode === 'true';
-            setIsNightMode(isSavedNightModeOn);
-        }
-
-        const savedEmailNotifications = localStorage.getItem('settings_emailNotifications');
-        if (savedEmailNotifications !== null) {
-            setEmailNotifications(savedEmailNotifications === 'true');
-        }
-
-        const savedLanguage = localStorage.getItem('settings_language');
-        if (savedLanguage) {
-            setLanguage(savedLanguage);
-        }
-    }, []);
+    const [isNightMode, setIsNightMode] = useState(() => {
+        const saved = localStorage.getItem('settings_nightMode');
+        return saved === 'true';
+    });
+    const [emailNotifications, setEmailNotifications] = useState(() => {
+        const saved = localStorage.getItem('settings_emailNotifications');
+        return saved !== 'false'; // Default to true
+    });
+    const [language, setLanguage] = useState(() => {
+        const saved = localStorage.getItem('settings_language');
+        return saved || 'Tiếng Việt'; // Default to Vietnamese
+    });
 
     // Effect to apply/remove dark mode class and save to localStorage
     useEffect(() => {

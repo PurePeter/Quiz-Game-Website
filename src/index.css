@@ -1,3 +1,33 @@
+:root {
+  --background-color: #f5f7fa;
+  --text-color: #111;
+  --header-bg: #fff;
+  --header-border: #eee;
+  --modal-bg: #fff;
+  --input-bg: #fff;
+  --input-border: #ccc;
+  --button-bg: #2196F3;
+  --button-text: #fff;
+  --switch-bg: #ccc;
+  --switch-slider: #fff;
+  --switch-checked-bg: #2196F3;
+}
+
+body.dark-mode {
+  --background-color: #121212;
+  --text-color: #fff;
+  --header-bg: #1e1e1e;
+  --header-border: #333;
+  --modal-bg: #1e1e1e;
+  --input-bg: #333;
+  --input-border: #555;
+  --button-bg: #2196F3;
+  --button-text: #fff;
+  --switch-bg: #555;
+  --switch-slider: #ccc;
+  --switch-checked-bg: #2196F3;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,77 +35,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.25s, color 0.25s;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
-
-/* Dark Mode Styles */
-body.dark-mode {
-  background-color: #121212;
-  color: #ffffff;
-}
-
-.header,
-.edit-profile-content,
-.modal-content,
-.nav-link,
-.user-button,
-.user-dropdown,
-.dropdown-item,
-.settings-container,
-select,
-input[type="text"],
-input[type="email"] {
-  transition: background-color 0.25s, color 0.25s, border-color 0.25s;
-}
-
-body.dark-mode .header,
-body.dark-mode,
-body.dark-mode .edit-profile-content,
-body.dark-mode .modal-content {
-  background-color: #1e1e1e;
-  border-bottom: 1px solid #333;
-  color: #ffffff;
-}
-
-body.dark-mode .nav-link {
-  color: #ccc;
-}
-
-body.dark-mode .nav-link.active {
-  color: #fff;
-  border-bottom: 2px solid #fff;
-}
-
-body.dark-mode .user-button {
-  background-color: #333;
-}
-
-body.dark-mode .user-dropdown {
-  background-color: #1e1e1e;
-  border: 1px solid #333;
-}
-
-body.dark-mode .dropdown-item {
-  color: #ccc;
-}
-
-body.dark-mode .dropdown-item:hover {
-  background-color: #333;
-}
-
-body.dark-mode .settings-container {
-  background-color: #1e1e1e;
-  color: #fff;
-}
-
-body.dark-mode select,
-body.dark-mode input[type="text"],
-body.dark-mode input[type="email"] {
-  background-color: #333;
-  color: #fff;
-  border-color: #555;
 }

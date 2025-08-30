@@ -47,7 +47,7 @@ const CreateQuiz = ({ isAuthenticated, user, quizId, onFinishEditing }) => {
                             category: quizToEdit.category || 'general',
                             difficulty: quizToEdit.difficulty || 'medium',
                             timeLimit: quizToEdit.timePerQuestion || 30,
-                            questions: (quizToEdit.questions || []).map(q => ({
+                            questions: (quizToEdit.questions || []).map((q) => ({
                                 questionText: q.text,
                                 imageUrl: q.imageUrl || '',
                                 answerOptions: (q.options || []).map((opt, index) => ({
@@ -297,7 +297,11 @@ const CreateQuiz = ({ isAuthenticated, user, quizId, onFinishEditing }) => {
         <div className="create-quiz-container">
             <div className="create-quiz-header">
                 <h1>{isEditMode ? 'Chỉnh sửa Quiz' : 'Tạo Quiz Mới'}</h1>
-                <p>{isEditMode ? 'Chỉnh sửa thông tin quiz của bạn.' : 'Tạo quiz của riêng bạn và chia sẻ với cộng đồng'}</p>
+                <p>
+                    {isEditMode
+                        ? 'Chỉnh sửa thông tin quiz của bạn.'
+                        : 'Tạo quiz của riêng bạn và chia sẻ với cộng đồng'}
+                </p>
             </div>
 
             <div className="create-quiz-content">
@@ -306,7 +310,7 @@ const CreateQuiz = ({ isAuthenticated, user, quizId, onFinishEditing }) => {
                     <h2>Thông tin Quiz</h2>
                     <div className="form-grid">
                         <div className="form-group">
-                            <label htmlFor="quiz-title">Tiêu đề Quiz *</label>
+                            <label htmlFor="quiz-title">Tiêu đề Quiz </label>
                             <input
                                 type="text"
                                 id="quiz-title"
@@ -384,7 +388,11 @@ const CreateQuiz = ({ isAuthenticated, user, quizId, onFinishEditing }) => {
                     {/* Question Form */}
                     {showQuestionForm && (
                         <div className="question-form" ref={questionFormRef}>
-                            <h3>{editingQuestionIndex >= 0 ? `Chỉnh sửa câu hỏi cho Câu ${editingQuestionIndex + 1}` : 'Thêm câu hỏi mới'}</h3>
+                            <h3>
+                                {editingQuestionIndex >= 0
+                                    ? `Chỉnh sửa câu hỏi cho Câu ${editingQuestionIndex + 1}`
+                                    : 'Thêm câu hỏi mới'}
+                            </h3>
 
                             <div className="form-group">
                                 <label htmlFor="question-text">Nội dung câu hỏi *</label>
@@ -515,14 +523,10 @@ const CreateQuiz = ({ isAuthenticated, user, quizId, onFinishEditing }) => {
                         onClick={saveQuiz}
                         disabled={quizData.questions.length === 0 || isLoading}
                     >
-                        {isLoading ? 'Đang lưu...' : (isEditMode ? '💾 Cập nhật Quiz' : '💾 Lưu bản nháp')}
+                        {isLoading ? 'Đang lưu...' : isEditMode ? '💾 Cập nhật Quiz' : '💾 Lưu bản nháp'}
                     </button>
                     {isEditMode && (
-                        <button
-                            className="cancel-btn"
-                            onClick={onFinishEditing}
-                            disabled={isLoading}
-                        >
+                        <button className="cancel-btn" onClick={onFinishEditing} disabled={isLoading}>
                             Hủy
                         </button>
                     )}

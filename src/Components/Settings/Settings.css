@@ -3,18 +3,18 @@
     max-width: 800px;
     margin: 100px auto;
     padding: 2rem;
-    background-color: #f9f9f9;
+    background-color: var(--modal-bg);
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
 }
 
 .settings-container h1 {
-    color: #111;
     font-weight: bold;
 }
 
 .settings-section h2 {
-    border-bottom: 2px solid #eee;
+    border-bottom: 2px solid var(--header-border);
     padding-bottom: 10px;
     margin-bottom: 20px;
 }
@@ -24,7 +24,6 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px 0;
-    color: #333;
 }
 
 .setting-item label {
@@ -35,6 +34,9 @@
     padding: 8px 16px;
     border-radius: 5px;
     outline-color: #2196F3;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--input-border);
 }
 
 /* The switch - adapted from W3Schools */
@@ -58,7 +60,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    background-color: var(--switch-bg);
     -webkit-transition: .4s;
     transition: .4s;
 }
@@ -70,17 +72,17 @@
     width: 26px;
     left: 4px;
     bottom: 4px;
-    background-color: white;
+    background-color: var(--switch-slider);
     -webkit-transition: .4s;
     transition: .4s;
 }
 
 input:checked+.slider {
-    background-color: #2196F3;
+    background-color: var(--switch-checked-bg);
 }
 
 input:focus+.slider {
-    box-shadow: 0 0 1px #2196F3;
+    box-shadow: 0 0 1px var(--switch-checked-bg);
 }
 
 input:checked+.slider:before {

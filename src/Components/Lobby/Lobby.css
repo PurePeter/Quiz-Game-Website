@@ -143,9 +143,22 @@ html {
 
 .lobby-description {
     font-size: 16px;
-    color: #000;
     margin-bottom: 40px;
     text-shadow: none;
+}
+
+/* Light mode */
+@media (prefers-color-scheme: light) {
+    .lobby-description {
+        color: #000;
+    }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    .lobby-description {
+        color: #ccc;
+    }
 }
 
 /* Auth required */
@@ -356,7 +369,8 @@ html {
 
 .lobby-description {
     font-size: 1.2rem;
-    color: #000;
+    color: #555;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
     margin-bottom: 3rem;
 }
 

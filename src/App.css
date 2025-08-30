@@ -44,13 +44,14 @@
 body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--background-color);
   min-height: 100vh;
 }
 
 .App {
   position: relative;
   min-height: 100vh;
+  background-color: var(--background-color);
 }
 
 /* Enhance modal styles to match header theme */
@@ -68,13 +69,4 @@ h2 {
   text-align: center;
   color: #667eea;
   margin-top: 2rem;
-}
-
-/* Dark Mode Background Override */
-body.dark-mode {
-  background: #121212;
-}
-
-body.dark-mode .App {
-  background-color: #121212;
 }
