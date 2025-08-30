@@ -1,5 +1,10 @@
 /* Apply lobby grid look */
-body, html { background: var(--background-color); color: var(--text-color); }
+body,
+html {
+    background: var(--background-color);
+    color: var(--text-color);
+}
+
 .create-quiz-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -7,17 +12,22 @@ body, html { background: var(--background-color); color: var(--text-color); }
     min-height: calc(100vh - 80px);
     position: relative;
 }
+
 .create-quiz-container::before {
     content: "";
     position: fixed;
     inset: 0;
     background-image: linear-gradient(var(--grid-color, #222) 1px, transparent 1px),
-                      linear-gradient(90deg, var(--grid-color, #222) 1px, transparent 1px);
+        linear-gradient(90deg, var(--grid-color, #222) 1px, transparent 1px);
     background-size: 40px 40px;
     z-index: 0;
     pointer-events: none;
 }
-.create-quiz-container > * { position: relative; z-index: 1; }
+
+.create-quiz-container>* {
+    position: relative;
+    z-index: 1;
+}
 
 .create-quiz-header {
     text-align: center;
@@ -35,7 +45,10 @@ body, html { background: var(--background-color); color: var(--text-color); }
     font-weight: 700;
 }
 
-.create-quiz-header p { font-size: 1rem; opacity: 0.95; }
+.create-quiz-header p {
+    font-size: 1rem;
+    opacity: 0.95;
+}
 
 .create-quiz-content {
     display: flex;
@@ -430,6 +443,7 @@ body, html { background: var(--background-color); color: var(--text-color); }
 
     .form-grid {
         grid-template-columns: 1fr;
+        gap: 0.5rem;
     }
 
     .questions-header {
@@ -450,5 +464,35 @@ body, html { background: var(--background-color); color: var(--text-color); }
 
     .correct-label {
         align-self: flex-start;
+    }
+
+    /* Create question area */
+    .questions-header h2 {
+        margin: 1rem auto;
+    }
+
+    .questions-section {
+        padding: 1.5rem;
+    }
+
+    .question-form {
+        padding: 1.2rem;
+    }
+
+    .question-text {
+        margin: 0 auto;
+    }
+
+    .question-form h3 {
+        margin: 1rem auto;
+        font-size: 1.4rem;
+    }
+
+    .answer-options label {
+        margin-left: 0.5rem;
+    }
+
+    .question-actions {
+        margin-top: 1.4rem;
     }
 }

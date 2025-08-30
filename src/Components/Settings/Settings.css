@@ -99,3 +99,18 @@ input:checked+.slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+
+/* Responsive area */
+@media (max-width: 600px) {
+    .settings-container {
+        width: 92%;
+    }
+
+    .settings-container h1 {
+        margin: 0.5rem auto;
+    }
+
+    .settings-section h2 {
+        margin: 1.3rem auto;
+    }
+}

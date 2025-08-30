@@ -19,15 +19,22 @@ const Header = ({
     // Close dropdowns when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (!event.target.closest('.user-menu') && !event.target.closest('.mobile-menu')) {
-                setShowUserDropdown(false);
+            // Close mobile menu if clicked outside of the menu itself or the toggle button
+            if (showMobileMenu && !event.target.closest('.nav-menu') && !event.target.closest('.mobile-toggle')) {
                 setShowMobileMenu(false);
+            }
+            // Close user dropdown if clicked outside
+            if (showUserDropdown && !event.target.closest('.user-menu')) {
+                setShowUserDropdown(false);
             }
         };
 
-        document.addEventListener('click', handleClickOutside);
-        return () => document.removeEventListener('click', handleClickOutside);
-    }, []);
+        // Use mousedown to catch the event before a potential click event on another element
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showMobileMenu, showUserDropdown]); // Re-run effect if state changes
 
     const handleLogin = async (credentials) => {
         try {

@@ -38,10 +38,11 @@
     background: transparent;
     border: none;
     font-size: 1.6rem;
-    padding: 6px 10px;
+    padding: 6px 14px;
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s;
+    margin-bottom: 20px;
 }
 
 .close-btn:hover {

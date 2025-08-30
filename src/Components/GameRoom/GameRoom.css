@@ -80,7 +80,7 @@
 .quiz-container {
     background: linear-gradient(135deg, #800080 0%, #4B0082 100%);
     border-radius: 24px;
-    padding: 32px 36px;
+    padding: 32px;
     margin: 40px auto;
     max-width: 900px;
     width: 100%;
@@ -262,6 +262,7 @@
     background: linear-gradient(135deg, #800080 0%, #4B0082 100%);
     border-radius: 24px;
     padding: 24px 16px;
+    margin-top: 15px;
     margin-bottom: 18px;
     max-width: 420px;
     width: 100%;
@@ -476,12 +477,12 @@
     display: flex;
     gap: 1rem;
     justify-content: center;
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .play-again-btn,
 .back-to-lobby-btn {
-    padding: 1rem 2rem;
+    padding: 1rem;
     border: none;
     border-radius: 12px;
     font-size: 1.1rem;
@@ -544,7 +545,7 @@
     border-radius: 12px;
     max-width: 1300px;
     width: 90vw;
-    margin: 0 auto 1.5rem auto;
+    margin: 1.5rem auto 1.5rem auto;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
 }
 
@@ -622,6 +623,14 @@
         gap: 1rem;
         text-align: center;
     }
+
+    .answer-section {
+        width: 100%;
+        max-width: 800px;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+    }
 }
 
 @keyframes pulse {
@@ -652,7 +661,7 @@
     background: rgba(255, 255, 255, 0.08);
     border-radius: 24px;
     padding: 32px 36px;
-    margin: 40px auto 24px auto;
+    margin: 30px auto 24px auto;
     max-width: 600px;
     width: 100%;
     box-shadow: 0 8px 32px rgba(80, 0, 80, 0.10);
@@ -678,7 +687,7 @@
     border-radius: 12px;
     margin-bottom: 1.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    width: 90%;
+    width: 95%;
     max-width: 400px;
     color: #fff;
 }
@@ -689,7 +698,7 @@
     border-radius: 12px;
     margin-bottom: 1.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    width: 90%;
+    width: 95%;
     max-width: 400px;
 }
 
