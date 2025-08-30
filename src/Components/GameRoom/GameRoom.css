@@ -111,6 +111,11 @@
     text-align: center;
 }
 
+.quiz-container .summary-card h3,
+.quiz-container .summary-card p {
+    color: #fff;
+}
+
 .header-info {
     width: 100%;
     display: flex;

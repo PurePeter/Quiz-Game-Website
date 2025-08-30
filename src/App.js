@@ -116,13 +116,18 @@ function App() {
             console.log('📥 App.js: Login response:', data);
 
             if (data.success && data.user) {
-                const userData = {
+                let userData = {
                     _id: data.user._id,
                     name: data.user.name,
                     email: data.user.email,
-                    avatar: `https://ui-avatars.com/api/?name=${data.user.name}&background=4f46e5&color=fff`,
+                    avatar: data.user.profilePicture ? `http://localhost:3000${data.user.profilePicture}` : '', // Use profilePicture and construct absolute URL
                     token: data.token,
                 };
+
+                // If avatar is still empty, use default avatar
+                if (!userData.avatar) {
+                    userData.avatar = `https://ui-avatars.com/api/?name=${data.user.name}&background=4f46e5&color=fff`;
+                }
 
                 setUser(userData);
                 setToken(data.token);
@@ -347,7 +352,14 @@ function App() {
 
         switch (currentPage) {
             case 'create':
-                return <CreateQuiz isAuthenticated={isAuthenticated} user={user} quizId={quizToEditId} onFinishEditing={handleFinishEditing} />;
+                return (
+                    <CreateQuiz
+                        isAuthenticated={isAuthenticated}
+                        user={user}
+                        quizId={quizToEditId}
+                        onFinishEditing={handleFinishEditing}
+                    />
+                );
             case 'history':
                 return <History isAuthenticated={isAuthenticated} user={user} />;
             case 'leaderboard':

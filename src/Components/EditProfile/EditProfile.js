@@ -31,23 +31,39 @@ const EditProfile = ({ user, onUpdateUser, onClose }) => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const updatedUser = { ...user, ...formData };
-        if (avatarFile) {
-            updatedUser.avatar = avatarPreview;
-        }
-
-        // Save updated user data to localStorage
+        // Gọi API backend để cập nhật thông tin user
         try {
-            localStorage.setItem('quizUser', JSON.stringify(updatedUser));
-        } catch (error) {
-            console.error('Failed to save user data to localStorage', error);
-        }
+            const token = localStorage.getItem('quiz_token');
+            const formDataToSend = new FormData();
+            formDataToSend.append('userId', user._id);
+            formDataToSend.append('name', formData.name);
+            if (avatarFile) {
+                formDataToSend.append('profilePicture', avatarFile);
+            }
 
-        // Update the state in App.js
-        onUpdateUser(updatedUser);
-        setIsEditing(false); // Switch back to view mode after saving
+            const response = await fetch('http://localhost:3000/api/v1/user/update', {
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: formDataToSend,
+            });
+            const data = await response.json();
+            if (data.success && data.userData) {
+                // Lưu lại vào localStorage
+                const updatedUser = { ...user, ...data.userData, avatar: data.userData.profilePicture ? `http://localhost:3000${data.userData.profilePicture}` : user.avatar };
+                localStorage.setItem('quizUser', JSON.stringify(updatedUser));
+                onUpdateUser(updatedUser);
+                setIsEditing(false);
+                onClose && onClose(); // Đóng form chỉnh sửa nếu có hàm onClose
+            } else {
+                alert(data.message || 'Cập nhật thất bại!');
+            }
+        } catch (error) {
+            alert('Lỗi kết nối server!');
+        }
     };
 
     const handleCancel = () => {
