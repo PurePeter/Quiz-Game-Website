@@ -8,6 +8,11 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.settings-container h1 {
+    color: #111;
+    font-weight: bold;
+}
+
 .settings-section h2 {
     border-bottom: 2px solid #eee;
     padding-bottom: 10px;
@@ -19,6 +24,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px 0;
+    color: #333;
 }
 
 .setting-item label {

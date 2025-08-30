@@ -4,98 +4,332 @@
   top: 0;
   left: 0;
   right: 0;
-  background: #ffffff;
-  border-bottom: 2px solid #000; /* black separator */
+  background: #fff;
+  border-bottom: 1px solid #eaeaea;
   z-index: 1000;
+  transition: box-shadow 0.2s ease-in-out;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.header:hover {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .header-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 10px 24px;
+  padding: 12px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 /* Logo & Title */
-.header-left { display: flex; align-items: center; }
-.header-logo { display: flex; align-items: center; gap: 12px; }
-.logo-image, .logo { width: 48px; height: 48px; object-fit: contain; margin-right: 10px; border: 2px solid #f472b6; padding: 3px; }
-.title-group { display: flex; flex-direction: column; }
-.title { font-size: 1.25rem; font-weight: 700; margin: 0; color: #222; }
-.subtitle { font-size: 0.85rem; color: #666; margin: 0; }
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo-image {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.header-logo:hover .logo-image {
+  transform: scale(1.1) rotate(-10deg);
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #222;
+  font-family: 'Poppins', sans-serif;
+}
 
 /* Navigation */
-.nav-menu { display: flex; align-items: center; gap: 24px; }
-.nav-link { display: flex; align-items: center; font-size: 1rem; font-weight: 500; color: #333; text-decoration: none; height: 36px; padding: 0 12px; border-radius: 999px; box-sizing: border-box; line-height: 36px; white-space: nowrap; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-.nav-link * { line-height: 1; }
-.nav-link .box { display: inline-block; width: 10px; height: 10px; margin-right: 6px; border: 2px solid; flex: 0 0 auto; }
-.nav-link.quiz .box { border-color: #a78bfa; }
-.nav-link.create .box { border-color: #34d399; }
-.nav-link.history .box { border-color: #67e8f9; }
-.nav-link:hover { color: #111; font-weight: 600; }
-.nav-link:focus { outline: none; }
-/* Active styles per page color */
-.nav-link.active { height: 36px; line-height: 36px; padding: 0 12px; border-radius: 999px; }
-.nav-link.active.quiz { background: rgba(167, 139, 250, 0.12); border: 1px solid #a78bfa; box-shadow: 0 2px 8px rgba(167, 139, 250, 0.2); }
-.nav-link.active.create { background: rgba(52, 211, 153, 0.12); border: 1px solid #34d399; box-shadow: 0 2px 8px rgba(52, 211, 153, 0.2); }
-.nav-link.active.history { background: rgba(103, 232, 249, 0.12); border: 1px solid #67e8f9; box-shadow: 0 2px 8px rgba(103, 232, 249, 0.2); }
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
 
-/* Prevent very long nav items from breaking layout */
-.nav-link.leaderboard { display: none; }
-/* Active bubble style */
-/* Neutralize any accidental active class so it doesn't look like a button */
-.nav-link.active { background: transparent; border: none; box-shadow: none; padding: 0 12px; }
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #444;
+  text-decoration: none;
+  padding: 10px 4px;
+  border-radius: 0;
+  transition: color 0.3s ease, transform 0.3s ease;
+  position: relative;
+  background-color: transparent;
+}
 
-/* Responsive tweaks */
-@media (max-width: 1024px) {
-  .header-container { padding: 8px 20px; }
-  .logo-image, .logo { width: 44px; height: 44px; }
-  .title { font-size: 1.15rem; }
-  .subtitle { font-size: 0.8rem; }
-  .nav-menu { gap: 20px; }
-  .nav-link { font-size: 0.95rem; }
-  .nav-link.leaderboard { display: none; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background-color: #0070f3;
+  transition: width 0.4s ease;
+}
+
+.nav-link:hover {
+  color: rgb(245, 170, 32);
+  transform: translateY(-3px);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+  background-color: rgb(245, 170, 32);
+}
+
+.nav-link.active {
+  color: #0070f3;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 2px;
+  background-color: #0070f3;
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover .nav-icon {
+  transform: scale(1.2);
+}
+
+/* User Section */
+.header-user {
+  position: relative;
+}
+
+.user-button {
+  height: 40px;
+  padding: 0 8px 0 8px;
+  border: 1px solid transparent;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.user-button:hover {
+  background-color: #f9f9f9;
+  border-color: #eee;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.dropdown-arrow {
+  font-size: 0.7rem;
+  color: #888;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.rotate {
+  transform: rotate(180deg);
+}
+
+/* User Dropdown */
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  min-width: 240px;
+  overflow: hidden;
+  padding: 8px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 8px 8px 16px;
+  margin-bottom: 8px;
+}
+
+.dropdown-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dropdown-name {
+  font-weight: 600;
+  color: #222;
+}
+
+.dropdown-email {
+  color: #777;
+  font-size: 0.85rem;
+}
+
+.dropdown-divider {
+  border: none;
+  border-top: 1px solid #f5f5f5;
+  margin: 4px 0;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 0.95rem;
+  color: #444;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+  color: #111;
+}
+
+.dropdown-item.logout {
+  color: #e53e3e;
+}
+
+.dropdown-item.logout:hover {
+  background-color: rgba(229, 62, 62, 0.1);
+  color: #c53030;
+}
+
+.icon-user,
+.icon-settings,
+.icon-logout {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+}
+
+/* Auth Buttons */
+.auth-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.login-btn,
+.signup-btn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+}
+
+.login-btn {
+  background: #f5f5f5;
+  color: #333;
+  border-color: #eee;
+}
+
+.login-btn:hover {
+  background: #eee;
+  border-color: #ddd;
+}
+
+.signup-btn {
+  background: #0070f3;
+  color: #fff;
+}
+
+.signup-btn:hover {
+  background: #005bb5;
+}
+
+/* Mobile & Responsive */
+.mobile-toggle {
+  display: none;
 }
 
 @media (max-width: 768px) {
-  .logo-image, .logo { width: 40px; height: 40px; }
-  .nav-link { font-size: 0.95rem; }
-  .nav-link .box { width: 9px; height: 9px; }
-  .nav-link.leaderboard { display: none; }
+  .nav-menu {
+    display: none;
+    /* Logic to show/hide is in JS */
+  }
+
+  .mobile-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+  }
+
+  .mobile-toggle span {
+    width: 22px;
+    height: 2px;
+    background: #333;
+    border-radius: 2px;
+  }
+
+  .header-container {
+    padding: 12px 16px;
+  }
 }
-
-/* Mobile menu toggle: hidden on desktop */
-.mobile-toggle { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 6px; }
-.mobile-toggle span { width: 22px; height: 2px; background: #333; border-radius: 2px; }
-@media (max-width: 768px) { .mobile-toggle { display: flex; } }
-
-/* Ensure content doesn't hide behind fixed header */
-.main-content { padding-top: 72px; }
-
-/* Dropdown and avatar fixes to avoid overflow */
-.user-dropdown { position: absolute; top: calc(100% + 12px); right: 60px; background: #fff; border: 1px solid #eee; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); min-width: 260px; overflow: hidden; padding: 6px 0; }
-.dropdown-header { display: flex; align-items: center; gap: 12px; padding: 12px; }
-.dropdown-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex: 0 0 auto; }
-.user-dropdown img { max-width: 100%; height: auto; display: block; }
-.dropdown-name, .dropdown-email { display: block; line-height: 1.2; }
-.dropdown-name { font-weight: 600; margin-bottom: 2px; }
-.dropdown-email { color: #6b7280; font-size: 0.92rem; }
-/* User button sizing and truncation */
-.user-button { height: 40px; padding: 0 10px; border: 1px solid #ddd; background: #fff; border-radius: 999px; display: flex; align-items: center; }
-.user-avatar { width: 28px; height: 28px; }
-.user-name { max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-@media (max-width: 1024px) { .user-name { max-width: 70px; } }
-@media (max-width: 768px) { .user-name { max-width: 50px; } }
-
-/* Keep existing sections below (auth, modals, etc.) */
-.auth-buttons { display: flex; gap: 0.75rem; }
-.login-btn, .signup-btn { padding: 0.5rem 1.5rem; border: none; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 0.9rem; }
-.login-btn { background: transparent; color: #333; border: 2px solid #ddd; }
-.login-btn:hover { background: #f5f5f5; border-color: #ccc; }
-.signup-btn { background: linear-gradient(45deg, #fbbf24, #f59e0b); color: #fff; }
-
-/* The rest of the original file styles (modals, dropdowns, etc.) intentionally omitted for brevity in this edit context. */

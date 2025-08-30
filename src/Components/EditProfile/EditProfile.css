@@ -18,7 +18,7 @@
     width: min(92vw, 520px);
     max-height: 90vh;
     overflow: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
 }
 
 .edit-profile-header {
@@ -75,10 +75,16 @@
     border-radius: 5px;
     cursor: pointer;
     display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.upload-btn:hover {
+    background-color: #7d74db;
 }
 
 .form-group {
     margin-bottom: 1rem;
+    margin-top: 0.8rem;
 }
 
 .form-group label {
@@ -108,7 +114,7 @@
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    margin-top: 1.5rem;
+    margin-top: 1.2rem;
 }
 
 .submit-btn,
@@ -127,6 +133,41 @@
 .cancel-btn {
     background-color: #dc3545;
     color: white;
+}
+
+.form-footer {
+    text-align: center;
+    margin: 1.2rem auto;
+}
+
+.form-footer p {
+    color: #333;
+    margin: 0.5rem auto;
+}
+
+.form-footer p button {
+    margin-left: 0.2rem;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    color: rgb(54, 54, 196);
+    font-size: 1.1rem;
+    font-family: 'Press Start 2P', monospace;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.form-footer p button:hover,
+.form-footer .forgot-password:hover {
+    color: rgb(112, 112, 230);
+    text-decoration: underline;
+}
+
+.form-footer .forgot-password {
+    margin-top: 1rem;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-family: 'Press Start 2P', monospace;
 }
 
 /* Styles for View Mode */
@@ -153,7 +194,7 @@
     display: block;
     color: #666;
     font-size: 1.1rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
     font-weight: bold;
 }
 

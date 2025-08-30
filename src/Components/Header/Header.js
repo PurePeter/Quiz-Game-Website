@@ -104,7 +104,7 @@ const Header = ({
                                 handleNavClick('quiz');
                             }}
                         >
-                            <span className="box"></span>
+                            <span className="nav-icon">💡</span>
                             Quiz
                         </a>
                         <a
@@ -115,7 +115,7 @@ const Header = ({
                                 handleNavClick('create');
                             }}
                         >
-                            <span className="box"></span>
+                            <span className="nav-icon">✏️</span>
                             Tạo Quiz
                         </a>
                         {/* Removed Leaderboard link as requested */}
@@ -127,7 +127,7 @@ const Header = ({
                                 handleNavClick('history');
                             }}
                         >
-                            <span className="box"></span>
+                            <span className="nav-icon">🕒</span>
                             Lịch sử
                         </a>
                     </nav>
@@ -397,7 +397,7 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
 
                 <form onSubmit={handleSubmit} className="login-form">
                     <div className="form-group">
-                        <label htmlFor="register-name">Tên hiển thị *</label>
+                        <label htmlFor="register-name">Tên hiển thị</label>
                         <input
                             type="text"
                             id="register-name"
@@ -412,7 +412,7 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="register-email">Email *</label>
+                        <label htmlFor="register-email">Email</label>
                         <input
                             type="email"
                             id="register-email"
@@ -427,7 +427,7 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="register-password">Mật khẩu *</label>
+                        <label htmlFor="register-password">Mật khẩu</label>
                         <input
                             type="password"
                             id="register-password"
@@ -442,7 +442,7 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="register-confirm-password">Xác nhận mật khẩu *</label>
+                        <label htmlFor="register-confirm-password">Xác nhận mật khẩu</label>
                         <input
                             type="password"
                             id="register-confirm-password"
@@ -480,4 +480,3 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
 };
 
 export default Header;
-
