@@ -1,7 +1,7 @@
 // Authentication Service
 class AuthService {
     constructor() {
-        this.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+        this.baseURL = process.env.REACT_APP_API_URL || 'https://quiz-game-8vq2.onrender.com/api/v1';
     }
 
     // Mock login - replace with real API call
