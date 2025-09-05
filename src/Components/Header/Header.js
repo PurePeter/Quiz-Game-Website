@@ -300,6 +300,46 @@ const LoginModal = ({ onLogin, onClose, onSwitchToRegister }) => {
                         </button>
                     </div>
 
+                    <div className="social-login-divider">
+                        <span>HOẶC</span>
+                    </div>
+
+                    <div className="form-actions">
+                        <button
+                            type="button"
+                            className="submit-btn google-btn"
+                            onClick={() => {
+                                alert('Chức năng đăng nhập với Google chưa được triển khai.');
+                            }}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 18 18"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    fill="#4285F4"
+                                    d="M17.64 9.2045c0-.6382-.0573-1.2518-.1636-1.8409H9.1818v3.4818h4.7909c-.2045 1.125-.8273 2.0782-1.7955 2.7218v2.2582h2.9091c1.7018-1.5664 2.6836-3.8736 2.6836-6.621z"
+                                ></path>
+                                <path
+                                    fill="#34A853"
+                                    d="M9.1818 18c2.43 0 4.4673-.8018 5.9564-2.1818l-2.9091-2.2582c-.8018.5436-1.8364.8718-2.9818.8718-2.31 0-4.2655-1.5664-4.9664-3.6682H1.2727v2.3318C2.7555 15.8336 5.7218 18 9.1818 18z"
+                                ></path>
+                                <path
+                                    fill="#FBBC05"
+                                    d="M4.2155 10.8982c-.11-.33-.17-.68-.17-1.04s.06-.71.17-1.04V6.4864H1.2727C.4636 8.0336 0 9.9655 0 12s.4636 3.9664 1.2727 5.5136L4.2155 14.57z"
+                                ></path>
+                                <path
+                                    fill="#EA4335"
+                                    d="M9.1818 3.6364c1.3227 0 2.5091.4545 3.4409 1.3455l2.5818-2.5818C13.6455.9655 11.6182 0 9.1818 0 5.7218 0 2.7555 2.1664 1.2727 5.1364L4.2155 7.4682c.7009-2.1018 2.6564-3.8318 4.9664-3.8318z"
+                                ></path>
+                            </svg>
+                            <span>Đăng nhập với Google</span>
+                        </button>
+                    </div>
+
                     <div className="form-footer">
                         <a href="#" className="forgot-password">
                             Quên mật khẩu?
