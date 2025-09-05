@@ -54,7 +54,7 @@ const GameRoom = ({ roomCode, quizId, user, playerName, onBackToLobby }) => {
 
     // Initialize Socket.IO connection
     useEffect(() => {
-        const newSocket = io('http://localhost:3000');
+        const newSocket = io('https://quiz-game-8vq2.onrender.com');
         socketRef.current = newSocket;
 
         // Connection events

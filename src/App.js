@@ -120,7 +120,9 @@ function App() {
                     _id: data.user._id,
                     name: data.user.name,
                     email: data.user.email,
-                    avatar: data.user.profilePicture ? `http://localhost:3000${data.user.profilePicture}` : '', // Use profilePicture and construct absolute URL
+                    avatar: data.user.profilePicture
+                        ? `https://quiz-game-8vq2.onrender.com${data.user.profilePicture}`
+                        : '', // Use profilePicture and construct absolute URL
                     token: data.token,
                 };
 

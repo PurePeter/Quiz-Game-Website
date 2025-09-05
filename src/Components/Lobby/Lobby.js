@@ -21,12 +21,12 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
     const roomActionsRef = useRef(null);
 
     // API Configuration
-    const API_BASE = 'http://localhost:3000/api/v1';
+    const API_BASE = 'https://quiz-game-8vq2.onrender.com/api/v1';
 
     // Initialize Socket.IO connection
     useEffect(() => {
         if (isAuthenticated) {
-            const newSocket = io('http://localhost:3000');
+            const newSocket = io('https://quiz-game-8vq2.onrender.com');
             socketRef.current = newSocket;
 
             // Connection events

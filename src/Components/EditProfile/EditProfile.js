@@ -33,7 +33,6 @@ const EditProfile = ({ user, onUpdateUser, onClose }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Gọi API backend để cập nhật thông tin user
         try {
             const token = localStorage.getItem('quiz_token');
             const formDataToSend = new FormData();
@@ -43,23 +42,39 @@ const EditProfile = ({ user, onUpdateUser, onClose }) => {
                 formDataToSend.append('profilePicture', avatarFile);
             }
 
-            const response = await fetch('http://localhost:3000/api/v1/user/update', {
-                method: 'PUT',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                body: formDataToSend,
-            });
-            const data = await response.json();
-            if (data.success && data.userData) {
-                // Lưu lại vào localStorage
-                const updatedUser = { ...user, ...data.userData, avatar: data.userData.profilePicture ? `http://localhost:3000${data.userData.profilePicture}` : user.avatar };
+            const base = 'https://quiz-game-8vq2.onrender.com';
+            const endpoints = [
+                { url: `${base}/api/v1/user/update`, method: 'PUT' },
+                { url: `${base}/api/v1/user/update`, method: 'POST' },
+            ];
+
+            let data = null;
+            for (const attempt of endpoints) {
+                try {
+                    const res = await fetch(attempt.url, {
+                        method: attempt.method,
+                        headers: { Authorization: `Bearer ${token}` },
+                        body: formDataToSend,
+                    });
+                    data = await res.json();
+                    if (res.ok && data && data.success) break;
+                } catch (_) {}
+            }
+
+            if (data && data.success && data.userData) {
+                const updatedUser = {
+                    ...user,
+                    ...data.userData,
+                    avatar: data.userData.profilePicture
+                        ? `${base}${data.userData.profilePicture}`
+                        : user.avatar,
+                };
                 localStorage.setItem('quizUser', JSON.stringify(updatedUser));
                 onUpdateUser(updatedUser);
                 setIsEditing(false);
-                onClose && onClose(); // Đóng form chỉnh sửa nếu có hàm onClose
+                onClose && onClose();
             } else {
-                alert(data.message || 'Cập nhật thất bại!');
+                alert((data && data.message) || 'Cập nhật thất bại!');
             }
         } catch (error) {
             alert('Lỗi kết nối server!');
