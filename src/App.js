@@ -188,6 +188,37 @@ function App() {
         }
     };
 
+    const handleForgotPassword = async ({ email }) => {
+        try {
+            console.log('🔑 App.js: Bắt đầu gửi yêu cầu quên mật khẩu...');
+
+            const response = await fetch(`${API_BASE}/auth/send-reset-otp`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await response.json();
+            console.log('📥 App.js: Forgot Password response:', data);
+
+            if (data.success) {
+                console.log('✅ App.js: Yêu cầu quên mật khẩu thành công');
+                // Toast message is handled in Header.js after success
+                return { success: true, message: data.message };
+            } else {
+                console.log('❌ App.js: Yêu cầu quên mật khẩu thất bại:', data.message);
+                // Toast message is handled in Header.js after failure
+                return { success: false, message: data.message };
+            }
+        } catch (error) {
+            console.error('❌ App.js: Lỗi gửi yêu cầu quên mật khẩu:', error);
+            toast.error('Lỗi kết nối server');
+            return { success: false, message: 'Lỗi kết nối server' };
+        }
+    };
+
     const handleLogout = () => {
         setUser(null);
         setToken('');
@@ -418,6 +449,7 @@ function App() {
                 user={user}
                 onLogin={handleLogin}
                 onRegister={handleRegister}
+                onForgotPassword={handleForgotPassword}
                 onLogout={handleLogout}
                 onShowProfile={() => handlePageChange('edit-profile')}
                 currentPage={getCurrentPage()}

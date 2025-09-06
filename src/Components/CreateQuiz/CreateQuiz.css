@@ -127,7 +127,7 @@ html {
 .questions-header h2 {
     color: var(--text-color);
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: bold;
 }
 
 .add-question-btn {
@@ -262,7 +262,7 @@ html {
 }
 
 .question-number {
-    font-weight: 600;
+    font-weight: bold;
     color: #4f46e5;
     font-size: 1.1rem;
 }
@@ -441,6 +441,27 @@ html {
         padding: 1rem;
     }
 
+    .create-quiz-header {
+        background-color: aquamarine;
+    }
+
+    .create-quiz-header h1 {
+        font-size: 2rem;
+    }
+
+    .create-quiz-header p {
+        font-size: 0.9rem;
+    }
+
+    .quiz-info-section {
+        padding: 1.2rem;
+    }
+
+    .quiz-info-section h2 {
+        margin-top: 0.7rem;
+        margin-bottom: 0.8rem;
+    }
+
     .form-grid {
         grid-template-columns: 1fr;
         gap: 0.5rem;
@@ -467,12 +488,16 @@ html {
     }
 
     /* Create question area */
+    .questions-header {
+        margin-bottom: 1.8rem;
+    }
+
     .questions-header h2 {
-        margin: 1rem auto;
+        margin: 0.6rem auto;
     }
 
     .questions-section {
-        padding: 1.5rem;
+        padding: 1.2rem;
     }
 
     .question-form {
@@ -481,11 +506,26 @@ html {
 
     .question-text {
         margin: 0 auto;
+        font-weight: 700;
+        line-height: 1.4;
     }
 
     .question-form h3 {
-        margin: 1rem auto;
+        margin: 0.4rem auto 0.7rem auto;
         font-size: 1.4rem;
+        font-weight: bold;
+    }
+
+    .question-item {
+        padding: 1.2rem;
+    }
+
+    .answer-list {
+        margin-top: 0.5rem;
+    }
+
+    .answer-item {
+        font-size: 0.9rem;
     }
 
     .answer-options label {
@@ -493,6 +533,10 @@ html {
     }
 
     .question-actions {
-        margin-top: 1.4rem;
+        margin-top: 0;
+    }
+
+    .save-actions {
+        padding: 1.4rem;
     }
 }

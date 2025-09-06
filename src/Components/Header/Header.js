@@ -6,6 +6,7 @@ const Header = ({
     user = null,
     onLogin,
     onRegister,
+    onForgotPassword,
     onLogout,
     onShowProfile,
     currentPage = 'none',
@@ -15,6 +16,7 @@ const Header = ({
     const [showUserDropdown, setShowUserDropdown] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [showRegisterModal, setShowRegisterModal] = useState(false);
+    const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
 
     // Close dropdowns when clicking outside
     useEffect(() => {
@@ -75,6 +77,26 @@ const Header = ({
             }
         } catch (error) {
             console.error('❌ Header: Lỗi đăng ký:', error);
+        }
+    };
+
+    const handleForgotPassword = async (email) => {
+        try {
+            console.log('🔄 Header: Bắt đầu khôi phục mật khẩu...');
+            if (onForgotPassword) {
+                const result = await onForgotPassword(email);
+                if (result.success) {
+                    setShowForgotPasswordModal(false);
+                    alert('Yêu cầu khôi phục mật khẩu đã được gửi. Vui lòng kiểm tra email của bạn.');
+                    console.log('✅ Header: Yêu cầu khôi phục mật khẩu thành công');
+                } else {
+                    alert(`Lỗi: ${result.message || 'Không thể gửi yêu cầu khôi phục mật khẩu.'}`);
+                    console.log('❌ Header: Khôi phục mật khẩu thất bại:', result.message);
+                }
+                return result;
+            }
+        } catch (error) {
+            console.error('❌ Header: Lỗi khôi phục mật khẩu:', error);
         }
     };
 
@@ -144,7 +166,19 @@ const Header = ({
                         {isAuthenticated && user ? (
                             <div className="user-menu">
                                 <button className="user-button" onClick={() => setShowUserDropdown(!showUserDropdown)}>
-                                    <img src={user.avatar} alt={user.name} className="user-avatar" />
+                                    <img
+                                        src={user.avatar}
+                                        alt={user.name}
+                                        className="user-avatar"
+                                        onError={(e) => {
+                                            try {
+                                                e.currentTarget.onerror = null;
+                                                e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                                    user.name || 'U',
+                                                )}&background=4f46e5&color=fff`;
+                                            } catch (_) {}
+                                        }}
+                                    />
                                     <span className="user-name">{user.name}</span>
                                     <i className={`dropdown-arrow ${showUserDropdown ? 'rotate' : ''}`}>▼</i>
                                 </button>
@@ -152,7 +186,19 @@ const Header = ({
                                 {showUserDropdown && (
                                     <div className="user-dropdown">
                                         <div className="dropdown-header">
-                                            <img src={user.avatar} alt={user.name} className="dropdown-avatar" />
+                                            <img
+                                                src={user.avatar}
+                                                alt={user.name}
+                                                className="dropdown-avatar"
+                                                onError={(e) => {
+                                                    try {
+                                                        e.currentTarget.onerror = null;
+                                                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                                            user.name || 'U',
+                                                        )}&background=4f46e5&color=fff`;
+                                                    } catch (_) {}
+                                                }}
+                                            />
                                             <div>
                                                 <div className="dropdown-name">{user.name}</div>
                                                 <div className="dropdown-email">{user.email}</div>
@@ -217,6 +263,10 @@ const Header = ({
                         setShowLoginModal(false);
                         setShowRegisterModal(true);
                     }}
+                    onSwitchToForgotPassword={() => {
+                        setShowLoginModal(false);
+                        setShowForgotPasswordModal(true);
+                    }}
                 />
             )}
 
@@ -231,12 +281,24 @@ const Header = ({
                     }}
                 />
             )}
+
+            {/* Forgot Password Modal */}
+            {showForgotPasswordModal && (
+                <ForgotPasswordModal
+                    onForgotPassword={handleForgotPassword}
+                    onClose={() => setShowForgotPasswordModal(false)}
+                    onSwitchToLogin={() => {
+                        setShowForgotPasswordModal(false);
+                        setShowLoginModal(true);
+                    }}
+                />
+            )}
         </>
     );
 };
 
 // Login Modal Component
-const LoginModal = ({ onLogin, onClose, onSwitchToRegister }) => {
+const LoginModal = ({ onLogin, onClose, onSwitchToRegister, onSwitchToForgotPassword }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -341,9 +403,15 @@ const LoginModal = ({ onLogin, onClose, onSwitchToRegister }) => {
                     </div>
 
                     <div className="form-footer">
-                        <a href="#" className="forgot-password">
-                            Quên mật khẩu?
-                        </a>
+                        <p>
+                            <button
+                                type="button"
+                                className="switch-modal-btn forgot-password"
+                                onClick={onSwitchToForgotPassword}
+                            >
+                                Quên mật khẩu?
+                            </button>
+                        </p>
                         <p>
                             Chưa có tài khoản?
                             <button type="button" className="switch-modal-btn" onClick={onSwitchToRegister}>
@@ -517,6 +585,85 @@ const RegisterModal = ({ onRegister, onClose, onSwitchToLogin }) => {
                             Đã có tài khoản?
                             <button type="button" className="switch-modal-btn" onClick={onSwitchToLogin}>
                                 Đăng nhập ngay
+                            </button>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+// Forgot Password Modal Component
+const ForgotPasswordModal = ({ onForgotPassword, onClose, onSwitchToLogin }) => {
+    const [email, setEmail] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!email.trim()) {
+            setError('Vui lòng nhập email của bạn!');
+            return;
+        }
+        if (!/\S+@\S+\.\S+/.test(email)) {
+            setError('Email không hợp lệ!');
+            return;
+        }
+
+        setIsLoading(true);
+        setError('');
+        await onForgotPassword({ email });
+        setIsLoading(false);
+    };
+
+    const handleChange = (e) => {
+        setEmail(e.target.value);
+        if (error) {
+            setError('');
+        }
+    };
+
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                    <h2>Quên mật khẩu</h2>
+                    <button className="modal-close" onClick={onClose}>
+                        ×
+                    </button>
+                </div>
+
+                <form onSubmit={handleSubmit} className="login-form">
+                    <p className="modal-description">
+                        Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn một liên kết để đặt lại mật khẩu!
+                    </p>
+
+                    <div className="form-group">
+                        <label htmlFor="forgot-email">Email:</label>
+                        <input
+                            type="email"
+                            id="forgot-email"
+                            name="email"
+                            value={email}
+                            onChange={handleChange}
+                            required
+                            placeholder="Nhập địa chỉ email của bạn..."
+                            className={error ? 'error' : ''}
+                        />
+                        {error && <span className="error-message">{error}</span>}
+                    </div>
+
+                    <div className="form-actions">
+                        <button type="submit" className="submit-btn" disabled={isLoading}>
+                            {isLoading ? 'Đang gửi...' : 'Gửi liên kết'}
+                        </button>
+                    </div>
+
+                    <div className="form-footer">
+                        <p>
+                            <button type="button" className="switch-modal-btn" onClick={onSwitchToLogin}>
+                                Quay lại đăng nhập
                             </button>
                         </p>
                     </div>

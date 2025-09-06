@@ -310,7 +310,7 @@ const CreateQuiz = ({ isAuthenticated, user, quizId, onFinishEditing }) => {
                     <h2>Thông tin Quiz</h2>
                     <div className="form-grid">
                         <div className="form-group">
-                            <label htmlFor="quiz-title">Tiêu đề Quiz </label>
+                            <label htmlFor="quiz-title">Tiêu đề Quiz</label>
                             <input
                                 type="text"
                                 id="quiz-title"

@@ -211,3 +211,49 @@
     justify-content: center;
     width: 100%;
 }
+
+@media (max-width: 768px) {
+    .form-group label {
+        font-size: 1rem;
+    }
+
+    .form-footer {
+        margin: 1rem auto;
+    }
+
+    .form-footer .forgot-password {
+        margin: 0.3rem auto;
+    }
+
+    .form-footer p button,
+    .form-footer p {
+        font-size: 0.9rem;
+        margin: 0.3rem auto 0 auto;
+    }
+
+    .login-form .modal-description {
+        font-size: 0.9rem;
+    }
+
+    /* Edit Profile Area */
+    .edit-profile-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .avatar-preview {
+        width: 130px;
+        height: 130px;
+    }
+
+    .info-group p {
+        font-size: 1rem;
+    }
+
+    .upload-btn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}

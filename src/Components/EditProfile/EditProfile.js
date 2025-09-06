@@ -106,7 +106,17 @@ const EditProfile = ({ user, onUpdateUser, onClose }) => {
                     // Edit Mode
                     <form onSubmit={handleSubmit} className="edit-profile-form">
                         <div className="avatar-section">
-                            <img src={avatarPreview} alt="Avatar" className="avatar-preview" />
+                            <img
+                                src={avatarPreview}
+                                alt="Avatar"
+                                className="avatar-preview"
+                                onError={(e) => {
+                                    try {
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.name || 'U')}&background=4f46e5&color=fff`;
+                                    } catch (_) {}
+                                }}
+                            />
                             <input type="file" id="avatarUpload" onChange={handleFileChange} accept="image/*" />
                             <label htmlFor="avatarUpload" className="upload-btn">
                                 Thay đổi avatar
@@ -143,7 +153,17 @@ const EditProfile = ({ user, onUpdateUser, onClose }) => {
                     // View Mode
                     <div className="view-profile">
                         <div className="avatar-section">
-                            <img src={user?.avatar} alt="Avatar" className="avatar-preview" />
+                            <img
+                                src={user?.avatar}
+                                alt="Avatar"
+                                className="avatar-preview"
+                                onError={(e) => {
+                                    try {
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'U')}&background=4f46e5&color=fff`;
+                                    } catch (_) {}
+                                }}
+                            />
                         </div>
                         <div className="info-group">
                             <label>Tên</label>

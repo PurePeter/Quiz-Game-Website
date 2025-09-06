@@ -160,9 +160,10 @@
 }
 
 .dropdown-arrow {
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   color: #888;
   transition: transform 0.2s ease;
+  font-style: normal;
 }
 
 .dropdown-arrow.rotate {

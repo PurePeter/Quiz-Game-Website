@@ -38,6 +38,7 @@ body {
   background-color: var(--background-color);
   color: var(--text-color);
   transition: background-color 0.25s, color 0.25s;
+  -webkit-tap-highlight-color: transparent;
 }
 
 code {

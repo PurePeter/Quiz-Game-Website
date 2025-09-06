@@ -10,7 +10,9 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
     const [availableQuizzes, setAvailableQuizzes] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [showCreateRoom, setShowCreateRoom] = useState(false);
+    const [closingCreateRoom, setClosingCreateRoom] = useState(false);
     const [showJoinRoom, setShowJoinRoom] = useState(false); // ✅ Thêm state cho join room
+    const [closingJoinRoom, setClosingJoinRoom] = useState(false);
     const [roomName, setRoomName] = useState('');
     const [roomCode, setRoomCode] = useState(''); // ✅ Thêm state cho room code
     const [maxPlayers, setMaxPlayers] = useState(4);
@@ -296,6 +298,29 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
         }
     };
 
+    // Handlers for closing modals with animation
+    const handleCloseCreateModal = () => {
+        setClosingCreateRoom(true);
+        setTimeout(() => {
+            setShowCreateRoom(false);
+            setClosingCreateRoom(false);
+        }, 400); // Match animation duration
+    };
+
+    const handleCloseJoinModal = () => {
+        setClosingJoinRoom(true);
+        setTimeout(() => {
+            setShowJoinRoom(false);
+            setClosingJoinRoom(false);
+        }, 400); // Match animation duration
+    };
+
+    // Reset states when opening modals
+    const handleOpenCreateModal = () => {
+        setClosingCreateRoom(false);
+        setShowCreateRoom(true);
+    };
+
     return (
         <div className="lobby-container">
             <h1 className="lobby-title">🎮 Quiz Game Lobby</h1>
@@ -387,7 +412,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
                             </div>
 
                             <div className="action-buttons">
-                                <button className="create-room-btn" onClick={() => setShowCreateRoom(true)}>
+                                <button className="create-room-btn" onClick={handleOpenCreateModal}>
                                     🏠 Tạo Phòng Mới
                                 </button>
                             </div>
@@ -396,11 +421,17 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
 
                     {/* Create Room Modal */}
                     {showCreateRoom && (
-                        <div className="modal-overlay" onClick={() => setShowCreateRoom(false)}>
-                            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div
+                            className={`modal-overlay ${closingCreateRoom ? 'fade-out' : ''}`}
+                            onClick={handleCloseCreateModal}
+                        >
+                            <div
+                                className={`modal-content ${closingCreateRoom ? 'slide-down' : ''}`}
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 <div className="modal-header">
                                     <h2>🏠 Tạo Phòng Mới</h2>
-                                    <button className="modal-close" onClick={() => setShowCreateRoom(false)}>
+                                    <button className="modal-close" onClick={handleCloseCreateModal}>
                                         ×
                                     </button>
                                 </div>
@@ -446,7 +477,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
                                     <button className="submit-btn" onClick={handleCreateRoom} disabled={isLoading}>
                                         {isLoading ? 'Đang tạo...' : '🏠 Tạo Phòng'}
                                     </button>
-                                    <button className="cancel-btn" onClick={() => setShowCreateRoom(false)}>
+                                    <button className="cancel-btn" onClick={handleCloseCreateModal}>
                                         Hủy
                                     </button>
                                 </div>
@@ -456,11 +487,17 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
 
                     {/* Join Room Modal */}
                     {showJoinRoom && (
-                        <div className="modal-overlay" onClick={() => setShowJoinRoom(false)}>
-                            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div
+                            className={`modal-overlay ${closingJoinRoom ? 'fade-out' : ''}`}
+                            onClick={handleCloseJoinModal}
+                        >
+                            <div
+                                className={`modal-content ${closingJoinRoom ? 'slide-down' : ''}`}
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 <div className="modal-header">
                                     <h2>🚪 Tham Gia Phòng</h2>
-                                    <button className="modal-close" onClick={() => setShowJoinRoom(false)}>
+                                    <button className="modal-close" onClick={handleCloseJoinModal}>
                                         ×
                                     </button>
                                 </div>
@@ -496,7 +533,7 @@ const Lobby = ({ onStartQuiz, isAuthenticated, user, onEnterGameRoom, onEditQuiz
                                     <button className="submit-btn" onClick={handleJoinRoom} disabled={isLoading}>
                                         {isLoading ? 'Đang tham gia...' : '🚪 Tham Gia Phòng'}
                                     </button>
-                                    <button className="cancel-btn" onClick={() => setShowJoinRoom(false)}>
+                                    <button className="cancel-btn" onClick={handleCloseJoinModal}>
                                         Hủy
                                     </button>
                                 </div>

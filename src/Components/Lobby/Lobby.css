@@ -252,16 +252,6 @@ html {
 }
 
 /* Modal */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.75);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-}
-
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -572,6 +562,7 @@ html {
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    animation: fadeIn 0.3s ease;
 }
 
 .modal-content {
@@ -584,6 +575,7 @@ html {
     max-height: 90vh;
     overflow-y: auto;
     border: 2px solid #000;
+    animation: slideUp 0.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .modal-header {
@@ -751,6 +743,50 @@ html {
     background: #d97706;
 }
 
+/* Closing animations */
+.modal-overlay.fade-out {
+    animation: fadeOut 0.35s ease-out forwards;
+}
+
+.modal-content.slide-down {
+    animation: slideDown 0.35s cubic-bezier(0.5, 0, 0.75, 0) forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Loading */
 .loading {
     text-align: center;
@@ -765,12 +801,63 @@ html {
         padding: 1rem;
     }
 
+    .lobby-description {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
     .lobby-title {
-        font-size: 2rem;
+        font-size: 1.6rem;
+    }
+
+    .modal-header {
+        padding: 0.8rem 0;
+    }
+
+    .modal-header h2 {
+        font-size: 1.4rem;
+    }
+
+    .modal-close {
+        margin-top: -20px;
+        padding: 0 0.4rem;
+    }
+
+    .quiz-selection {
+        margin: 4rem 0 1rem 0;
+        padding: 1.2rem;
+    }
+
+    .quiz-selection h2:nth-child(1) {
+        font-size: 1.4rem;
+    }
+
+    .quiz-selection h2 {
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+    }
+
+    .quiz-card {
+        padding: 1.2rem;
+    }
+
+    .quiz-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0;
+    }
+
+    .quiz-card p {
+        font-size: 0.9rem;
+        margin: 0.5rem auto;
+    }
+
+    .quiz-meta span {
+        font-size: 0.8rem;
     }
 
     .quiz-grid {
         grid-template-columns: 1fr;
+        gap: 1.2rem;
     }
 
     .action-buttons {
@@ -785,6 +872,42 @@ html {
     .start-button {
         margin-left: 0;
         margin-top: 0.5rem;
+    }
+
+    /* Room action */
+    .room-actions {
+        padding: 1.2rem;
+    }
+
+    .room-actions h2 {
+        margin-top: 0.4rem;
+        font-size: 1.4rem;
+    }
+
+    .selected-quiz {
+        font-size: 0.9rem;
+        margin-bottom: 1.2rem;
+    }
+
+    /* Quick Start */
+    .quick-start {
+        padding: 1.2rem;
+        margin: 3.5rem 0 2rem 0;
+    }
+
+    .quick-start p {
+        font-size: 0.9rem;
+        margin-bottom: 0.7rem;
+    }
+
+    .name-input {
+        font-size: 1rem;
+        width: 92%;
+    }
+
+    /* Create Room */
+    .modal-body {
+        padding: 0.5rem;
     }
 }
 
